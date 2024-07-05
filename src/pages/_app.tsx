@@ -6,6 +6,10 @@ import { WagmiProvider } from 'wagmi';
 import { defaultWagmiConfig } from '@web3modal/wagmi';
 import { flare, flareTestnet } from 'viem/chains';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient();
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
@@ -41,11 +45,14 @@ createWeb3Modal({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiProvider config={wagmiConfig}>
-      <ThemeProvider theme={theme}>
-        <BaseLayout className="font-sans">
-          <Component {...pageProps} />
-        </BaseLayout>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <ThemeProvider theme={theme}>
+          <BaseLayout className="font-sans">
+            <Component {...pageProps} />
+          </BaseLayout>
+        </ThemeProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }
