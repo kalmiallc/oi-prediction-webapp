@@ -46,8 +46,8 @@ export default function EventCard({ className, data }: { data: GameData } & Comp
       <h3 className="text-lg mb-2">{data.title}</h3>
       <div className="">Starts {dayjs(Number(data.startTime) * 1000).fromNow()}</div>
       <div className="flex justify-between">
-        {data.choices.map(choice => (
-          <Button disabled={!isConnected} onClick={() => onChoice(choice.choiceId)}>
+        {data.choices.map((choice, index) => (
+          <Button disabled={!isConnected} key={index} onClick={() => onChoice(choice.choiceId)}>
             {choice.choiceName}
           </Button>
         ))}
