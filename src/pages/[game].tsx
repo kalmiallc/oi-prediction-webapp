@@ -35,7 +35,7 @@ export default function Home() {
     <div className="p-24">
       <h1 className="text-black text-3xl font-bold mb-8">{game}</h1>
       <div className="flex flex-col gap-4">
-        {!!gameData?.length && gameData.map(data => <EventCard data={data} />)}
+        {!!gameData?.length && gameData.map((data, index) => <EventCard key={index} data={data} />)}
       </div>
     </div>
   );
