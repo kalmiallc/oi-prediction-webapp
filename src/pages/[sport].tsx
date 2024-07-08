@@ -9,33 +9,33 @@ import EventCard from '../components/parts/Event/EventCard';
 export default function Home() {
   const router = useRouter();
 
-  const [gameData, setGameData] = useState([] as GameData[]);
+  const [sportEvents, setSportEvents] = useState([] as SportEvent[]);
 
-  const gameLink = router?.query?.game as string;
-  const game = sportByLink?.[gameLink];
+  const sportQuery = router?.query?.sport as string;
+  const sport = sportByLink?.[sportQuery];
   const dateTimestamp = new Date('2024-07-02').getTime() / 1000;
   const startOfDay = Math.floor(dateTimestamp - (dateTimestamp % 86400));
-
   const { data } = useReadContract({
     abi: betAbi,
     address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
     functionName: 'getSportEventsByDateAndSport',
-    args: [startOfDay, game],
+    args: [startOfDay, sport],
   });
 
   useEffect(() => {
     if (Array.isArray(data) && data?.length) {
-      setGameData(data as GameData[]);
+      setSportEvents(data as SportEvent[]);
     } else {
-      setGameData([]);
+      setSportEvents([]);
     }
   }, [data]);
 
   return (
     <div className="p-24">
-      <h1 className="text-black text-3xl font-bold mb-8">{game}</h1>
-      <div className="flex flex-col gap-4">
-        {!!gameData?.length && gameData.map((data, index) => <EventCard key={index} data={data} />)}
+      <h1 className="text-black text-3xl font-bold mb-8 text-center">{sport}</h1>
+      <div className="flex flex-col gap-4 items-center">
+        {!!sportEvents?.length &&
+          sportEvents.map(event => <EventCard data={event} key={event.uuid} />)}
       </div>
     </div>
   );
