@@ -1,57 +1,51 @@
-import Icon from '@mdi/react';
 import classNames from 'classnames';
-import React, { useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import { Button } from '@mui/material';
-import { useAccount, useWriteContract } from 'wagmi';
-import { betAbi } from '../../../lib/abi';
-import { ContractType, getContractAddressForEnv } from '../../../lib/contracts';
-import { parseEther } from 'viem';
+import { useAccount } from 'wagmi';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import EventBetModal from './EventBetModal';
 
 dayjs.extend(relativeTime);
 
-export default function EventCard({ className, data }: { data: GameData } & ComponentProps) {
-  const { isConnected, address } = useAccount();
+export default function EventCard({ className, data }: { data: SportEvent } & ComponentProps) {
+  const { isConnected } = useAccount();
 
-  const { writeContractAsync } = useWriteContract();
+  const [openBet, setOpenBet] = useState(null as any);
+  let choices = data.choices;
+  // Can't just sort since choice index is used as id
+  // choices.sort((a, b) => {
+  //   const orders = {
+  //     [1]: 0,
+  //     [2]: 2,
+  //     [3]: 1,
+  //   };
+  //   return orders[a.choiceId] - orders[b.choiceId];
+  // });
 
-  async function onChoice(choice: 1 | 2 | 3) {
-    console.log(1);
-    const constractAddress = getContractAddressForEnv(
-      ContractType.BET_SHOWCASE,
-      process.env.NODE_ENV
-    );
-    if (!constractAddress) {
-      console.log(2);
-      return;
-    }
-    try {
-      const amount = parseEther('1');
-      await writeContractAsync({
-        abi: betAbi,
-        address: constractAddress,
-        functionName: 'placeBet',
-        args: [data.uuid, choice],
-        value: amount,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  async function onChoice(choiceIndex: number) {
+    setOpenBet(choiceIndex);
   }
 
   return (
-    <div className={classNames([className, 'border rounded-lg p-4'])}>
-      <h3 className="text-lg mb-2">{data.title}</h3>
-      <div className="">Starts {dayjs(Number(data.startTime) * 1000).fromNow()}</div>
+    <div className={classNames([className, 'border rounded-lg p-4', 'max-w-[600px] w-full'])}>
+      <div className="flex justify-between mb-4">
+        <h3 className="text-lg">{data.title}</h3>
+        <div className="text-sm">Starts {dayjs(Number(data.startTime) * 1000).fromNow()}</div>
+      </div>
       <div className="flex justify-between">
-        {data.choices.map((choice, index) => (
-          <Button disabled={!isConnected} key={index} onClick={() => onChoice(choice.choiceId)}>
-            {choice.choiceName}
-          </Button>
+        {choices.map((choice, i) => (
+          <div className="flex flex-col" key={choice.choiceId}>
+            <div className="text-sm text-center">
+              x{(Number(choice.currentMultiplier) / 1000).toFixed(2)}
+            </div>
+            <Button variant="outlined" disabled={!isConnected} onClick={() => onChoice(i)}>
+              {choice.choiceName}
+            </Button>
+          </div>
         ))}
       </div>
+      <EventBetModal data={data} choice={openBet} onClose={() => setOpenBet(null)} />
     </div>
   );
 }

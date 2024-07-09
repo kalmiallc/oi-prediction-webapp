@@ -10,7 +10,11 @@ export default function Sidebar() {
       {/* Desktop */}
       <aside
         style={{ transition: 'height 0.2s' }}
-        className={classNames(['bg-zinc-800', 'hidden overflow-x-clip lg:block', 'min-w-[250px]'])}
+        className={classNames([
+          'bg-zinc-800 border-r border-zinc-800/20',
+          'hidden overflow-x-clip lg:block py-6',
+          'min-w-[250px]',
+        ])}
       >
         <div style={{ transition: 'width 150ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
           <div>

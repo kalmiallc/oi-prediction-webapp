@@ -1,3 +1,4 @@
+import { Toaster } from 'sonner';
 import Sidebar from '../parts/Sidebar/Sidebar';
 import Header from './Header';
 import classNames from 'classnames';
@@ -5,6 +6,7 @@ import classNames from 'classnames';
 export default function BaseLayout({ children, className }: ComponentProps) {
   return (
     <>
+      <Toaster richColors expand />
       <div id="base-layout" className={className}>
         <Header />
 
