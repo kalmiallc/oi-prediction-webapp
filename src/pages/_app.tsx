@@ -9,6 +9,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Roboto } from 'next/font/google';
+import { GlobalProvider } from '@/contexts/global';
 
 const fontRoboto = Roboto({
   weight: ['400', '700'],
@@ -64,12 +65,14 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <ThemeProvider theme={theme}>
-            <BaseLayout className="font-sans">
-              <Component {...pageProps} />
-            </BaseLayout>
-          </ThemeProvider>
+          <GlobalProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <ThemeProvider theme={theme}>
+              <BaseLayout className="font-sans">
+                <Component {...pageProps} />
+              </BaseLayout>
+            </ThemeProvider>
+          </GlobalProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </>

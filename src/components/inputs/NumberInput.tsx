@@ -1,13 +1,12 @@
 import * as React from 'react';
 
 export default function NumberInput({
-  children,
   className,
   error,
   ...rest
 }: React.ComponentPropsWithoutRef<'input'> & { error?: string } & ComponentProps) {
   return (
-    <div className="mb-2">
+    <div className={className}>
       <input
         {...rest}
         id="price"

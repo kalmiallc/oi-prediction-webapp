@@ -33,11 +33,11 @@ type Choice = {
 };
 
 interface Bet {
-  id: number;
+  id: bigint;
   eventUUID: string;
   bettor: string;
-  betAmount: number;
-  winMultiplier: number;
-  betTimestamp: number;
+  betAmount: bigint;
+  winMultiplier: bigint;
+  betTimestamp: bigint;
   betChoice: ChoiceId;
 }

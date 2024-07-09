@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, CircularProgress, Dialog, Input, TextField } from '@mui/material';
+import { Button, CircularProgress, Dialog } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useContract from '@/hooks/useContract';
@@ -9,7 +9,8 @@ import { Controller } from 'react-hook-form';
 import { toast } from 'sonner';
 import useDebounce from '../../../hooks/useDebounce';
 import EventBetMultiplier from './EventBetMultiplier';
-import NumberInput from '../../input/NumberInput';
+import NumberInput from '@/components/inputs/NumberInput';
+import EventBetList from './EventBetList';
 
 dayjs.extend(relativeTime);
 
@@ -63,7 +64,7 @@ export default function EventBetModal({
 
   return (
     <Dialog open={!!choice?.toString()} onClose={() => onClose?.()} className={className}>
-      <div className="p-10 min-w-[300px]">
+      <div className="p-4 md:p-10 min-w-[min(500px,80vw)] ">
         <div className="mb-4">
           <h1 className="text-xl">{data.title}</h1>
           <h2>Bet for {data.choices?.[choice as any]?.choiceName}</h2>
@@ -76,6 +77,7 @@ export default function EventBetModal({
             defaultValue={0}
             render={({ field: { value, onChange } }) => (
               <NumberInput
+                className="mb-2"
                 value={value}
                 min={1}
                 max={maxAmount}
@@ -90,10 +92,13 @@ export default function EventBetModal({
             initial={Number(data.choices?.[choice]?.currentMultiplier) / 1000}
             amount={debouncedBet}
           />
-          <Button disabled={isPending} variant="contained" className="w-full mt-6" type="submit">
-            {isPending && <CircularProgress size={12} className="absolute" />}
-            Bet
-          </Button>
+          {data.winner === 0 && (
+            <Button disabled={isPending} variant="contained" className="w-full mt-4" type="submit">
+              {isPending && <CircularProgress size={12} className="absolute" />}
+              Bet
+            </Button>
+          )}
+          <EventBetList event={data} choice={choice} />
         </form>
       </div>
     </Dialog>
