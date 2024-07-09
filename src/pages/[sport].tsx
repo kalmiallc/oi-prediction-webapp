@@ -1,15 +1,18 @@
 import { useRouter } from 'next/router';
-import { useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { betAbi } from '../lib/abi';
 import { ContractType, getContractAddressForEnv } from '../lib/contracts';
 import { sportByLink } from '../lib/values';
 import { useEffect, useState } from 'react';
 import EventCard from '../components/parts/Event/EventCard';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function Home() {
   const router = useRouter();
 
   const [sportEvents, setSportEvents] = useState([] as SportEvent[]);
+  const { loadBets } = useGlobalContext();
+  const { address } = useAccount();
 
   const sportQuery = router?.query?.sport as string;
   const sport = sportByLink?.[sportQuery];
@@ -30,8 +33,14 @@ export default function Home() {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (startOfDay) {
+      loadBets(startOfDay);
+    }
+  }, [startOfDay, address]);
+
   return (
-    <div className="p-24">
+    <div className="md:p-24">
       <h1 className="text-black text-3xl font-bold mb-8 text-center">{sport}</h1>
       <div className="flex flex-col gap-4 items-center">
         {!!sportEvents?.length &&

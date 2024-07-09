@@ -10,7 +10,11 @@ export default function useContract() {
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
 
-  async function checkChain() {
+  async function check() {
+    if (!address) {
+      toast.error('Please connect wallet');
+      return false;
+    }
     if (!chainId) {
       toast.error('Please connect the wallet to the required chain');
     } else {
@@ -24,25 +28,37 @@ export default function useContract() {
     }
   }
 
+  const contractAddress = getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV);
+
   async function placeBet(betUuid: string, choiceId: number, amount: number) {
-    await checkChain();
-    const constractAddress = getContractAddressForEnv(
-      ContractType.BET_SHOWCASE,
-      process.env.NODE_ENV
-    );
-    if (!constractAddress) {
+    await check();
+    if (!contractAddress) {
       return;
     }
 
     const value = parseEther(amount.toString());
     await writeContractAsync({
       abi: betAbi,
-      address: constractAddress,
+      address: contractAddress,
       functionName: 'placeBet',
       args: [betUuid, choiceId],
       value,
     });
   }
 
-  return { placeBet, isPending: isPending || isPendingChain };
+  async function claimBet(betId: bigint) {
+    await check();
+    if (!contractAddress) {
+      return;
+    }
+
+    await writeContractAsync({
+      abi: betAbi,
+      address: contractAddress,
+      functionName: 'claimWinnings',
+      args: [betId],
+    });
+  }
+
+  return { placeBet, claimBet, isPending: isPending || isPendingChain };
 }
