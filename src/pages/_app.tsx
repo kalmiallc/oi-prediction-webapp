@@ -4,7 +4,7 @@ import BaseLayout from '../components/layouts/BaseLayout';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { WagmiProvider } from 'wagmi';
 import { defaultWagmiConfig } from '@web3modal/wagmi';
-import { flare, flareTestnet } from 'viem/chains';
+import { flareTestnet, songbird, songbirdTestnet } from 'viem/chains';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -22,7 +22,8 @@ const queryClient = new QueryClient();
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
-const chains = [flare, flareTestnet] as const;
+// TODO: change prod to songbird process.env.NODE_ENV === 'production' ? songbird : flareTestnet
+const chains = [flareTestnet] as const;
 
 const metadata = {
   name: 'Flare Bet',
@@ -34,6 +35,9 @@ const metadata = {
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 const theme = createTheme({
+  typography: {
+    fontFamily: fontRoboto.style.fontFamily,
+  },
   palette: {
     primary: {
       main: '#fb6f00',
