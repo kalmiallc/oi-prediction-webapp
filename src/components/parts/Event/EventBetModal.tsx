@@ -69,37 +69,38 @@ export default function EventBetModal({
           <h1 className="text-xl">{data.title}</h1>
           <h2>Bet for {data.choices?.[choice as any]?.choiceName}</h2>
         </div>
-        <form onSubmit={handleSubmit(data => onBet(data.bet))}>
-          <div className="text-sm text-gray-500 mb-1">Bet amount</div>
-          <Controller
-            control={control}
-            name="bet"
-            defaultValue={0}
-            render={({ field: { value, onChange } }) => (
-              <NumberInput
-                className="mb-2"
-                value={value}
-                min={1}
-                max={maxAmount}
-                error={errors.bet?.message}
-                onChange={e => onChange(+e.target.value)}
-              />
-            )}
-          />
-          <EventBetMultiplier
-            event={data.uuid}
-            choice={choice}
-            initial={Number(data.choices?.[choice]?.currentMultiplier) / 1000}
-            amount={debouncedBet}
-          />
-          {data.winner === 0 && (
+        {data.winner === 0 && (
+          <form onSubmit={handleSubmit(data => onBet(data.bet))}>
+            <div className="text-sm text-gray-500 mb-1">Bet amount</div>
+            <Controller
+              control={control}
+              name="bet"
+              defaultValue={0}
+              render={({ field: { value, onChange } }) => (
+                <NumberInput
+                  className="mb-2"
+                  value={value}
+                  min={1}
+                  step={1}
+                  max={maxAmount}
+                  error={errors.bet?.message}
+                  onChange={e => onChange(Math.floor(+e.target.value))}
+                />
+              )}
+            />
+            <EventBetMultiplier
+              event={data.uuid}
+              choice={choice}
+              initial={Number(data.choices?.[choice]?.currentMultiplier) / 1000}
+              amount={debouncedBet}
+            />
             <Button disabled={isPending} variant="contained" className="w-full mt-4" type="submit">
               {isPending && <CircularProgress size={12} className="absolute" />}
               Bet
             </Button>
-          )}
-          <EventBetList event={data} choice={choice} />
-        </form>
+          </form>
+        )}
+        <EventBetList event={data} choice={choice} />
       </div>
     </Dialog>
   );

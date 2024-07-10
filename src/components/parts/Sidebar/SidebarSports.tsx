@@ -77,8 +77,7 @@ export default function SidebarSports({ className }: ComponentProps) {
     <div className={classNames(['overflow-y-auto overflow-x-hidden break-words', className])}>
       <div className="p-1">
         {sports.map((sport, i) => (
-          <SidebarSportsBtn className={classNames([''])} key={'sport-' + i} href={sport.link}>
-            <Icon path={sport.icon} size={1} className="mr-1" />
+          <SidebarSportsBtn key={'sport-' + i} href={sport.link}>
             {sport.name}
           </SidebarSportsBtn>
         ))}

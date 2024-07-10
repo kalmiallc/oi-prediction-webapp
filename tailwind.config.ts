@@ -9,9 +9,24 @@ module.exports = {
       sans: ['var(--font-roboto)'],
     },
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        transparent: 'transparent',
+        white: '#FFFFFF',
+        black: '#000000',
+
+        // System
+        red: '#EE4A3F',
+        green: '#1BE484',
+        orange: '#EE933F',
+        blue: '#247CFF',
+        darkred: '#B8393E',
+        darkgreen: '#00773E',
+        darkorange: '#C77F4B',
+        yellow: '#EED658',
+
+        // Pink
+        primary: '#E62058',
+        secondary: '#F7ECEF',
       },
     },
   },

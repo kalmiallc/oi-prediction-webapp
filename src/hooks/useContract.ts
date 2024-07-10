@@ -1,14 +1,20 @@
 import { parseEther } from 'viem';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { ContractType, getContractAddressForEnv } from '../lib/contracts';
 import { betAbi } from '../lib/abi';
 import { toast } from 'sonner';
 import { flareTestnet, songbird } from 'viem/chains';
+import { useEffect } from 'react';
+import { useGlobalContext } from '../contexts/global';
 
 export default function useContract() {
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { data: hash, writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
+  const { loadBets } = useGlobalContext();
 
   async function check() {
     if (!address) {
@@ -37,14 +43,16 @@ export default function useContract() {
       return;
     }
 
+    console.log(amount);
     const value = parseEther(amount.toString());
-    await writeContractAsync({
+    const tx = await writeContractAsync({
       abi: betAbi,
       address: contractAddress,
       functionName: 'placeBet',
       args: [betUuid, choiceId],
       value,
     });
+    tx;
   }
 
   async function claimBet(betId: bigint) {
@@ -60,6 +68,10 @@ export default function useContract() {
       args: [betId],
     });
   }
+
+  useEffect(() => {
+    loadBets();
+  }, [isConfirmed]);
 
   return { placeBet, claimBet, isPending: isPending || isPendingChain };
 }

@@ -2,6 +2,7 @@ import { Toaster } from 'sonner';
 import Sidebar from '../parts/Sidebar/Sidebar';
 import Header from './Header';
 import classNames from 'classnames';
+import Head from 'next/head';
 
 export default function BaseLayout({ children, className }: ComponentProps) {
   return (

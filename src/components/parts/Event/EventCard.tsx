@@ -28,7 +28,7 @@ export default function EventCard({ className, data }: { data: SportEvent } & Co
   }
 
   return (
-    <div className={classNames([className, 'border rounded-lg p-4', 'max-w-[600px] w-full'])}>
+    <div className={classNames([className, '  rounded-[15px] p-4', 'w-full bg-white'])}>
       <div className="flex justify-between mb-4 flex-wrap">
         <h3 className="text-lg">{data.title}</h3>
         <div className="text-sm">Starts {dayjs(Number(data.startTime) * 1000).fromNow()}</div>
