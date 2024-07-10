@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  output: "export",
+  output: 'export',
 
   reactStrictMode: true,
+  trailingSlash: true,
 
   webpack(config) {
     config.module.rules.push({
@@ -10,7 +11,7 @@ module.exports = {
       issuer: /\.[jt]sx?$/,
       use: [
         {
-          loader: "@svgr/webpack",
+          loader: '@svgr/webpack',
           options: { icon: true },
         },
       ],
