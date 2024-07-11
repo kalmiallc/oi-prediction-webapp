@@ -30,6 +30,7 @@ type Choice = {
   choiceName: string;
   totalBetsAmount: bigint;
   currentMultiplier: bigint;
+  choiceIndex?: number;
 };
 
 interface Bet {

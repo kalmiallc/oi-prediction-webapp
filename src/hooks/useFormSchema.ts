@@ -14,8 +14,6 @@ export default function useFormSchema<T extends z.ZodTypeAny>(
 ) {
   const form = useForm<z.infer<typeof schema>>({
     resolver: async (data, context, options) => {
-      // console.log(data);
-      // console.log(await zodResolver(schema)(data, context, options));
       return zodResolver(schema)(data, context, options);
     },
     ...options,

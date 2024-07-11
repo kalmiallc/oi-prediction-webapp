@@ -1,18 +1,25 @@
 import { betAbi } from '@/lib/abi';
 import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
-import { createContext, ReactNode, useContext, useReducer } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { readContract } from '@wagmi/core';
 import { useAccount, useConfig } from 'wagmi';
 
 // #region types
-type Action = { type: 'addBets'; payload: { address: `0x${string}`; bets: Bet[] } };
+type Action =
+  | {
+      type: 'addBets';
+      payload: { address: `0x${string}`; bets: Bet[] };
+    }
+  | { type: 'setTimestamp'; payload: number };
 type State = {
+  timestamp?: number;
   bets: { [address: `0x${string}`]: Bet[] };
 };
 // #endregion
 
 const initialState = () =>
   ({
+    timestamp: undefined,
     bets: {},
   }) as State;
 
@@ -24,15 +31,20 @@ function reducer(state: State, action: Action) {
         bets: { ...state.bets, [action.payload.address]: action.payload.bets },
       };
     }
+    case 'setTimestamp': {
+      return {
+        ...state,
+        timestamp: action.payload,
+      };
+    }
     default: {
-      throw new Error('Unhandled action type: ' + action.type);
+      throw new Error(('Unhandled action type: ' + action) as any);
     }
   }
 }
 
 const GlobalContext = createContext<
-  | { state: State; dispatch: (action: Action) => void; loadBets: (timestamp: number) => void }
-  | undefined
+  { state: State; dispatch: (action: Action) => void; loadBets: () => void } | undefined
 >(undefined);
 
 function GlobalProvider({ children }: { children: ReactNode }) {
@@ -40,18 +52,17 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   const config = useConfig();
   const { address } = useAccount();
 
-  async function loadBets(timestamp: number) {
-    if (!address) {
+  async function loadBets() {
+    if (!address || !state.timestamp) {
       return;
     }
     const bets = (await readContract(config, {
       abi: betAbi,
       address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
       functionName: 'getBetsByDateAndUser',
-      args: [timestamp, address],
+      args: [state.timestamp, address],
     } as any)) as Bet[];
 
-    console.log({ bets });
     dispatch({
       type: 'addBets',
       payload: { address, bets },

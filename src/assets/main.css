@@ -3,14 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffecf2;
+  --foreground: #000000;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 svg:not(.svg-filled) {
@@ -18,5 +17,15 @@ svg:not(.svg-filled) {
 
   path {
     fill: currentColor;
+  }
+}
+
+.MuiInputBase-root {
+  border-radius: 10px;
+  background: white;
+  &.Mui-focused {
+    svg {
+      color: theme('colors.primary');
+    }
   }
 }

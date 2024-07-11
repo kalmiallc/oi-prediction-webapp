@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function SidebarSportsBtn({
   href,
   disableActive = false,
-  activeClass = '!font-bold !bg-[#fb6f00]/10',
+  activeClass = '!text-primary',
   onClick,
   children,
 }: {
@@ -25,7 +25,7 @@ export default function SidebarSportsBtn({
       component={Link}
       href={href}
       className={classNames([
-        '!flex w-full !my-2 !py-2 ',
+        'flex font-bold text-black py-2 pl-12 normal-case text-xl justify-start',
         {
           [activeClass]: isActive && !disableActive,
         },

@@ -3,8 +3,10 @@ import { useConfig } from 'wagmi';
 import { readContract } from '@wagmi/core';
 import { betAbi } from '../../../lib/abi';
 import { ContractType, getContractAddressForEnv } from '../../../lib/contracts';
+import classNames from 'classnames';
 
 export default function EventBetMultiplier({
+  className,
   event,
   choice,
   initial,
@@ -12,6 +14,7 @@ export default function EventBetMultiplier({
 }: { event: string; choice: number; initial: number; amount: number } & ComponentProps) {
   const config = useConfig();
   const [newMulti, setNewMulti] = useState(0);
+  const [newReturn, setNewReturn] = useState(initial * amount);
 
   async function getNewMutli() {
     const aproxReturn = await readContract(config, {
@@ -20,19 +23,27 @@ export default function EventBetMultiplier({
       functionName: 'calculateAproximateBetReturn',
       args: [amount, choice, event],
     } as any);
-    console.log({ amount, choice, event });
     const numberReturn = Number(aproxReturn) / 1000;
     const multiplier = numberReturn / amount;
-    console.log({ numberReturn, multiplier, aproxReturn });
     setNewMulti(multiplier);
+    setNewReturn(Number(aproxReturn) / 1000);
   }
 
   useEffect(() => {
-    getNewMutli();
+    if (amount) {
+      getNewMutli();
+    }
   }, [amount]);
   return (
-    <span className="text-xs text-gray-500 flex items-center gap-1 bg-gray-200 rounded-lg w-fit px-1 my-1">
-      Multiplier: x{(newMulti || initial).toFixed(2)}
-    </span>
+    <div className={classNames(['text-xs text-gray items-center', className])}>
+      <div>
+        Multiplier:{' '}
+        <span className="text-black font-bold">x{(newMulti || initial).toFixed(2)}</span>
+      </div>
+      <div>
+        Potential FLR Returns:{' '}
+        <span className="text-black font-bold">{(newReturn || initial * amount).toFixed(2)}</span>
+      </div>
+    </div>
   );
 }

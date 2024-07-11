@@ -29,14 +29,14 @@ export default function EventBetList({
               <div>Bet</div>
               <div>Amount</div>
               <div>Time</div>
-              {event.winner === 0 && <div></div>}
+              {event.winner !== 0 && <div></div>}
             </div>
             {bets.map(bet => (
               <div
                 key={bet.id}
                 className={classNames([
                   'grid ',
-                  event.winner === 0 ? 'grid-cols-4' : 'grid-cols-3',
+                  event.winner !== 0 ? 'grid-cols-4' : 'grid-cols-3',
                 ])}
               >
                 <div>{event.choices[bet.betChoice]?.choiceName}</div>
@@ -48,7 +48,7 @@ export default function EventBetList({
                 </div>
                 <div className="text-end">{dayjs(Number(bet.betTimestamp) * 1000).fromNow()}</div>
 
-                {event.winner === 0 && (
+                {event.winner !== 0 && (
                   <div className="text-center">
                     <Button className="" size="small" onClick={() => claimBet(bet.id)}>
                       Claim

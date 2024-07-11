@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Roboto } from 'next/font/google';
 import { GlobalProvider } from '@/contexts/global';
+import Head from 'next/head';
 
 const fontRoboto = Roboto({
   weight: ['400', '700'],
@@ -25,14 +26,14 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 // TODO: change prod to songbird process.env.NODE_ENV === 'production' ? songbird : flareTestnet
 const chains = [flareTestnet] as const;
 
-const metadata = {
+const metadataW = {
   name: 'Flare Bet',
   description: 'Flare Bet App',
   url: 'https://web3modal.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
 };
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata: metadataW });
 
 const theme = createTheme({
   typography: {
@@ -40,10 +41,10 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#fb6f00',
+      main: '#D9205A',
     },
     secondary: {
-      main: '#edf2ff',
+      main: '#FFECF2',
     },
   },
 });
@@ -53,11 +54,22 @@ createWeb3Modal({
   projectId,
   enableOnramp: false,
   enableAnalytics: false,
+  themeVariables: {
+    '--w3m-font-family': 'Roboto, sans-serif',
+    '--w3m-accent': '#D9205A',
+    '--w3m-color-mix': '#FFECF2',
+    '--w3m-color-mix-strength': 50,
+  },
+  themeMode: 'light',
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <title>Flare Bet</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+      </Head>
       <style jsx global>{`
         :root {
           --font-roboto: ${fontRoboto.style.fontFamily};
