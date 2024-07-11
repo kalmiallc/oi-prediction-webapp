@@ -43,7 +43,6 @@ export default function useContract() {
       return;
     }
 
-    console.log(amount);
     const value = parseEther(amount.toString());
     const tx = await writeContractAsync({
       abi: betAbi,

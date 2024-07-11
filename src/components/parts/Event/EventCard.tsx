@@ -1,56 +1,63 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { Button } from '@mui/material';
-import { useAccount } from 'wagmi';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import EventBetModal from './EventBetModal';
+import EventBetInput from './EventBetInput';
 
 dayjs.extend(relativeTime);
 
-export default function EventCard({ className, data }: { data: SportEvent } & ComponentProps) {
-  const { isConnected } = useAccount();
+export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
+  const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
+  const choices = event.choices;
+  choices?.sort((a, b) => {
+    const orders = {
+      [1]: 0,
+      [2]: 2,
+      [3]: 1,
+    };
+    return orders[a.choiceId] - orders[b.choiceId];
+  });
+  const hasDraw = choices.length > 2;
 
-  const [openBet, setOpenBet] = useState(null as any);
-  const choices = data.choices;
-  // Can't just sort since choice index is used as id
-  // choices.sort((a, b) => {
-  //   const orders = {
-  //     [1]: 0,
-  //     [2]: 2,
-  //     [3]: 1,
-  //   };
-  //   return orders[a.choiceId] - orders[b.choiceId];
-  // });
-
-  async function onChoice(choiceIndex: number) {
-    setOpenBet(choiceIndex);
+  function onBet(amount: number, choiceIndex: number) {
+    setBetData({ amount, choice: choiceIndex });
   }
 
+  const titleString = event.title?.replace('-', 'vs').split(hasDraw ? ' ' : ' vs ');
+
   return (
-    <div className={classNames([className, '  rounded-[15px] p-4', 'w-full bg-white'])}>
-      <div className="flex justify-between mb-4 flex-wrap">
-        <h3 className="text-lg">{data.title}</h3>
-        <div className="text-sm">Starts {dayjs(Number(data.startTime) * 1000).fromNow()}</div>
+    <div className={classNames([className, 'rounded-[24px] pb-5 pt-2', 'w-full bg-white'])}>
+      <div className="text-xs text-center">
+        Starts {dayjs(Number(event.startTime) * 1000).fromNow()}
       </div>
-      <div className="flex justify-between flex-wrap  gap-2">
-        {choices.map((choice, i) => (
-          <div className="flex flex-col w-full md:w-auto" key={choice.choiceId}>
-            <div className="text-sm text-center">
-              x{(Number(choice.currentMultiplier) / 1000).toFixed(2)}
-            </div>
-            <Button
-              variant="outlined"
-              className=""
-              disabled={!isConnected}
-              onClick={() => onChoice(i)}
-            >
-              {choice.choiceName}
-            </Button>
-          </div>
+      <div
+        className={classNames([
+          'grid mt-4 mb-6 text-center items-center md:grid-cols-3 grid-cols-1',
+        ])}
+      >
+        {titleString.map((x, i) => (
+          <h3 className={classNames(['font-bold text-[22px]'])} key={i}>
+            {x}
+          </h3>
         ))}
       </div>
-      <EventBetModal data={data} choice={openBet} onClose={() => setOpenBet(null)} />
+      <div
+        className={classNames([
+          'grid gap-5 justify-items-center grid-cols-1 px-10',
+          hasDraw ? 'md:grid-cols-3' : 'md:grid-cols-2',
+        ])}
+      >
+        {choices.map(choice => (
+          <EventBetInput
+            key={choice.choiceId}
+            event={event}
+            choice={choice}
+            onBet={x => onBet(x, choice.choiceIndex as number)}
+          />
+        ))}
+      </div>
+      <EventBetModal event={event} data={betData} onClose={() => setBetData(null)} />
     </div>
   );
 }

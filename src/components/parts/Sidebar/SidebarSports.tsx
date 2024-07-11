@@ -75,7 +75,7 @@ export default function SidebarSports({ className }: ComponentProps) {
   ];
   return (
     <div className={classNames(['overflow-y-auto overflow-x-hidden break-words', className])}>
-      <div className="p-1">
+      <div className="">
         {sports.map((sport, i) => (
           <SidebarSportsBtn key={'sport-' + i} href={sport.link}>
             {sport.name}

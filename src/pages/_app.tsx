@@ -41,10 +41,10 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#E62058',
+      main: '#D9205A',
     },
     secondary: {
-      main: '#F7ECEF',
+      main: '#FFECF2',
     },
   },
 });
@@ -56,8 +56,8 @@ createWeb3Modal({
   enableAnalytics: false,
   themeVariables: {
     '--w3m-font-family': 'Roboto, sans-serif',
-    '--w3m-accent': '#E62058',
-    '--w3m-color-mix': '#F7ECEF',
+    '--w3m-accent': '#D9205A',
+    '--w3m-color-mix': '#FFECF2',
     '--w3m-color-mix-strength': 50,
   },
   themeMode: 'light',
@@ -68,7 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>Flare Bet</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
       </Head>
       <style jsx global>{`
         :root {

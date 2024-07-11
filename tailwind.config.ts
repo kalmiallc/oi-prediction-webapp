@@ -25,8 +25,10 @@ module.exports = {
         yellow: '#EED658',
 
         // Pink
-        primary: '#E62058',
-        secondary: '#F7ECEF',
+        primary: '#D9205A',
+        secondary: '#FFECF2',
+
+        gray: '#6D6D6D',
       },
     },
   },

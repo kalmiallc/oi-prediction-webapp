@@ -25,7 +25,7 @@ export default function SidebarSportsBtn({
       component={Link}
       href={href}
       className={classNames([
-        'flex font-bold text-black my-2 py-2 pl-12 normal-case text-xl justify-start',
+        'flex font-bold text-black py-2 pl-12 normal-case text-xl justify-start',
         {
           [activeClass]: isActive && !disableActive,
         },

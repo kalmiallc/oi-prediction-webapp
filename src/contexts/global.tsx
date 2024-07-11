@@ -52,15 +52,6 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   const config = useConfig();
   const { address } = useAccount();
 
-  useEffect(() => {
-    const dateTimestamp = new Date('2024-07-02').getTime() / 1000;
-    const startOfDay = Math.floor(dateTimestamp - (dateTimestamp % 86400));
-    dispatch({
-      type: 'setTimestamp',
-      payload: startOfDay,
-    });
-    loadBets();
-  }, []);
   async function loadBets() {
     if (!address || !state.timestamp) {
       return;
