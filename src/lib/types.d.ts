@@ -15,7 +15,7 @@ type ChoiceId = 1 | 2 | 3;
 type Winner = 0 | ChoiceId;
 
 interface SportEvent {
-  uuid: string;
+  uid: string;
   title: string;
   startTime: number;
   duration: number;
@@ -35,7 +35,7 @@ type Choice = {
 
 interface Bet {
   id: bigint;
-  eventUUID: string;
+  eventUID: string;
   bettor: string;
   betAmount: bigint;
   winMultiplier: bigint;
