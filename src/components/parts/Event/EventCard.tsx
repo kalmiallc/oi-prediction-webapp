@@ -1,63 +1,94 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import EventBetModal from './EventBetModal';
 import EventBetInput from './EventBetInput';
-
+import { formatEther } from 'viem';
 dayjs.extend(relativeTime);
 
 export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
   const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
-  const choices = event.choices;
-  choices?.sort((a, b) => {
-    const orders = {
-      [1]: 0,
-      [2]: 2,
-      [3]: 1,
-    };
-    return orders[a.choiceId] - orders[b.choiceId];
-  });
+  const [choices, setChoices] = useState(
+    event.choices?.sort((a, b) => {
+      const orders = {
+        [1]: 0,
+        [2]: 2,
+        [3]: 1,
+      };
+      return orders[a.choiceId] - orders[b.choiceId];
+    })
+  );
   const hasDraw = choices.length > 2;
 
   function onBet(amount: number, choiceIndex: number) {
     setBetData({ amount, choice: choiceIndex });
   }
-
-  const titleString = event.title?.replace('-', 'vs').split(hasDraw ? ' ' : ' vs ');
-
+  useEffect(() => {
+    setChoices(
+      event.choices?.sort((a, b) => {
+        const orders = {
+          [1]: 0,
+          [2]: 2,
+          [3]: 1,
+        };
+        return orders[a.choiceId] - orders[b.choiceId];
+      })
+    );
+  }, [event.choices]);
   return (
-    <div className={classNames([className, 'rounded-[24px] pb-5 pt-2', 'w-full bg-white'])}>
-      <div className="text-xs text-center">
-        Starts {dayjs(Number(event.startTime) * 1000).fromNow()}
-      </div>
+    <div className="relative mt-10 w-full">
       <div
         className={classNames([
-          'grid mt-4 mb-6 text-center items-center md:grid-cols-3 grid-cols-1',
+          'absolute px-5 h-full z-0 w-1/2 pt-3.5 -top-10 rounded-t-[24px]',
+          'bg-secondary text-white font-bold text-sm',
+          'shadow-[0_4px_4px_0] shadow-black/25',
         ])}
       >
-        {titleString.map((x, i) => (
-          <h3 className={classNames(['font-bold text-[22px]'])} key={i}>
-            {x}
-          </h3>
-        ))}
+        <p>Pool total: {formatEther(event.poolAmount)} FLR</p>
       </div>
+
       <div
         className={classNames([
-          'grid gap-5 justify-items-center grid-cols-1 px-10',
-          hasDraw ? 'md:grid-cols-3' : 'md:grid-cols-2',
+          className,
+          'rounded-[24px] pb-5 pt-2',
+          'relative w-full bg-white shadow-[0_4px_4px_0] shadow-black/25',
         ])}
       >
-        {choices.map(choice => (
-          <EventBetInput
-            key={choice.choiceId}
-            event={event}
-            choice={choice}
-            onBet={x => onBet(x, choice.choiceIndex as number)}
-          />
-        ))}
+        <div className="text-xs text-center">
+          Starts {dayjs(Number(event.startTime) * 1000).fromNow()}
+        </div>
+        <div
+          className={classNames([
+            'grid gap-5 justify-items-center grid-cols-1 px-10 mt-4',
+            'md:grid-cols-3',
+          ])}
+        >
+          {choices.map((choice, i) => (
+            <>
+              <div key={event.uid + '-' + i}>
+                <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
+                  {choice.choiceId === 3 ? 'vs' : choice.choiceName}
+                </h3>
+                <EventBetInput
+                  event={event}
+                  choice={choice}
+                  onBet={x => onBet(x, choice.choiceIndex as number)}
+                />
+              </div>
+              {!hasDraw && i === 0 && (
+                <div
+                  key={event.uid + '-' + 2}
+                  className={classNames(['font-bold text-[22px] text-center mb-6 hidden md:block'])}
+                >
+                  vs
+                </div>
+              )}
+            </>
+          ))}
+        </div>
+        <EventBetModal event={event} data={betData} onClose={() => setBetData(null)} />
       </div>
-      <EventBetModal event={event} data={betData} onClose={() => setBetData(null)} />
     </div>
   );
 }

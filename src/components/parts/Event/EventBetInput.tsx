@@ -17,7 +17,7 @@ export default function EventBetInput({
   const maxAmount = Number(event.poolAmount);
 
   const schema = z.object({
-    bet: z.number().min(1, 'Invalid amount').max(maxAmount, 'Invalid amount'),
+    bet: z.number().min(0.01, 'Invalid amount').max(maxAmount, 'Invalid amount'),
   });
 
   const {
@@ -54,11 +54,11 @@ export default function EventBetInput({
             render={({ field: { value, onChange } }) => (
               <NumberInput
                 value={value}
-                min={1}
-                step={1}
+                min={0}
+                step={0.1}
                 max={maxAmount}
                 className="!ring-primary flex-grow"
-                onChange={e => onChange(+e.target.value)}
+                onChange={e => onChange(Math.max(Number(e.target.value), 0))}
               ></NumberInput>
             )}
           />
@@ -70,7 +70,7 @@ export default function EventBetInput({
       </form>
       <EventBetMultiplier
         className="mt-3"
-        event={event.uuid}
+        event={event.uid}
         choice={choice.choiceIndex as number}
         initial={Number(choice?.currentMultiplier) / 1000}
         amount={debouncedBet}

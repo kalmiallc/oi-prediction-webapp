@@ -33,7 +33,11 @@ const metadataW = {
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
 };
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata: metadataW });
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata: metadataW,
+});
 
 const theme = createTheme({
   typography: {
@@ -44,7 +48,7 @@ const theme = createTheme({
       main: '#D9205A',
     },
     secondary: {
-      main: '#FFECF2',
+      main: '#FF95B7',
     },
   },
 });
@@ -79,8 +83,8 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: ${fontRoboto.style.fontFamily};
         }
       `}</style>
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={wagmiConfig}>
           <GlobalProvider>
             <ReactQueryDevtools initialIsOpen={false} />
             <ThemeProvider theme={theme}>
@@ -89,8 +93,8 @@ export default function App({ Component, pageProps }: AppProps) {
               </BaseLayout>
             </ThemeProvider>
           </GlobalProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
+        </WagmiProvider>
+      </QueryClientProvider>
     </>
   );
 }

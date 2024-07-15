@@ -11,10 +11,9 @@ export default function useContract() {
   const { data: hash, writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-  });
-  const { loadBets } = useGlobalContext();
+  // const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+  //   hash,
+  // });
 
   async function check() {
     if (!address) {
@@ -67,10 +66,6 @@ export default function useContract() {
       args: [betId],
     });
   }
-
-  useEffect(() => {
-    loadBets();
-  }, [isConfirmed]);
 
   return { placeBet, claimBet, isPending: isPending || isPendingChain };
 }

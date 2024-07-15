@@ -15,7 +15,7 @@ export default function DatePicker({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiDatePicker
         value={value}
-        className={classNames([style.datePicker, className])}
+        className={classNames([className])}
         label="Date"
         slotProps={{ textField: { size: 'small' }, field: { readOnly: true } }}
         onChange={x => onChange?.(x)}
