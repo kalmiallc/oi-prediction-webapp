@@ -4,8 +4,8 @@ import { useGlobalContext } from '@/contexts/global';
 import { Divider, Stack } from '@mui/material';
 import EventBetListItem from './EventBetListItem';
 import classNames from 'classnames';
-import { ContractType, getContractAddressForEnv } from '../../../lib/contracts';
-import { betAbi } from '../../../lib/abi';
+import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { betAbi } from '@/lib/abi';
 
 export default function EventBetList({ className }: ComponentProps) {
   const {

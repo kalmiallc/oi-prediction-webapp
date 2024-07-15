@@ -5,21 +5,10 @@ import { readContract } from '@wagmi/core';
 import { useAccount, useConfig } from 'wagmi';
 
 // #region types
-type Action =
-  | {
-      type: 'addBets';
-      payload: { address: `0x${string}`; bets: Bet[] };
-    }
-  | {
-      type: 'addEvents';
-      payload: SportEvent[];
-    }
-  | { type: 'setTimestamp'; payload: number };
+type Action = { type: 'setTimestamp'; payload: number | undefined };
 
 type State = {
-  timestamp?: number;
-  bets: { [address: `0x${string}`]: Bet[] };
-  events: SportEvent[];
+  timestamp: number | undefined;
 };
 // #endregion
 
@@ -32,20 +21,6 @@ const initialState = () =>
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case 'addBets': {
-      return {
-        ...state,
-        bets: { ...state.bets, [action.payload.address]: action.payload.bets },
-      };
-    }
-    case 'addEvents': {
-      const track = new Set();
-      const arr = [...state.events, ...action.payload];
-      return {
-        ...state,
-        events: arr.filter(({ uid }) => (track.has(uid) ? false : track.add(uid))),
-      };
-    }
     case 'setTimestamp': {
       return {
         ...state,
@@ -64,9 +39,6 @@ const GlobalContext = createContext<
 
 function GlobalProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState());
-  const config = useConfig();
-  const { address } = useAccount();
-
   return <GlobalContext.Provider value={{ state, dispatch }}>{children}</GlobalContext.Provider>;
 }
 

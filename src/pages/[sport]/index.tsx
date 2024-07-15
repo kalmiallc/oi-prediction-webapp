@@ -2,15 +2,15 @@ import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
 import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
 import { useGlobalContext } from '@/contexts/global';
 import { useParams } from 'next/navigation';
 import { CircularProgress, TextField } from '@mui/material';
 import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
-import useDebounce from '../../hooks/useDebounce';
-import DatePicker from '../../components/inputs/DatePicker';
+import useDebounce from '@/hooks/useDebounce';
+import DatePicker from '@/components/inputs/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 export default function SportPage() {
@@ -21,7 +21,6 @@ export default function SportPage() {
 
   const [sportEvents, setSportEvents] = useState([] as SportEvent[]);
   const [search, setSearch] = useState('');
-  console.log(state.timestamp);
   const [date, setDate] = useState<Dayjs | null>(
     state.timestamp ? dayjs(state.timestamp * 1000) : dayjs()
   );

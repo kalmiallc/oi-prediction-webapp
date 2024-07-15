@@ -1,11 +1,9 @@
 import { parseEther } from 'viem';
-import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import { ContractType, getContractAddressForEnv } from '../lib/contracts';
-import { betAbi } from '../lib/abi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
 import { flareTestnet, songbird } from 'viem/chains';
-import { useEffect } from 'react';
-import { useGlobalContext } from '../contexts/global';
 
 export default function useContract() {
   const { data: hash, writeContractAsync, isPending } = useWriteContract();

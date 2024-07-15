@@ -1,6 +1,4 @@
 import React from 'react';
-import { useAccount } from 'wagmi';
-import { useGlobalContext } from '@/contexts/global';
 import { formatUnits } from 'viem';
 import { Button } from '@mui/material';
 import dayjs from 'dayjs';
@@ -15,10 +13,6 @@ export default function EventBetListItem({
   bet,
   event,
 }: { bet: Bet; event?: SportEvent } & ComponentProps) {
-  const {
-    state: { events },
-  } = useGlobalContext();
-  const { address } = useAccount();
   const { claimBet } = useContract();
 
   function parseBetAmount(amount: bigint) {

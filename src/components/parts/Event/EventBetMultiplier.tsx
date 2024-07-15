@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useConfig, useReadContract } from 'wagmi';
-import { readContract } from '@wagmi/core';
-import { betAbi } from '../../../lib/abi';
-import { ContractType, getContractAddressForEnv } from '../../../lib/contracts';
+import { useReadContract } from 'wagmi';
+import { betAbi } from '@/lib/abi';
+import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
 import classNames from 'classnames';
-import { formatEther, formatUnits, parseEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 
 export default function EventBetMultiplier({
   className,
@@ -30,7 +29,6 @@ export default function EventBetMultiplier({
     if (amount) {
       getNewMutli();
     } else {
-      console.log(1);
       setNewMulti(initial);
       setNewReturn(0);
     }
@@ -40,7 +38,6 @@ export default function EventBetMultiplier({
     if (aproxReturn) {
       const numberReturn = Number(formatEther(aproxReturn as bigint));
       const multiplier = numberReturn / amount;
-      console.log({ numberReturn, multiplier, amount, aproxReturn });
       setNewMulti(multiplier);
       setNewReturn(Number(numberReturn));
     }

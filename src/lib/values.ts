@@ -1,13 +1,9 @@
 export enum Sports {
   Basketball,
   Basketball3x3,
-  Badminton,
-  BeachVolley,
   FieldHockey,
   Football,
   Handball,
-  TableTennis,
-  Tennis,
   Volleyball,
   WaterPolo,
 }
@@ -15,13 +11,9 @@ export enum Sports {
 export const sportByLink = {
   basketball: Sports.Basketball,
   basketball3x3: Sports.Basketball3x3,
-  badminton: Sports.Badminton,
-  beachvolley: Sports.BeachVolley,
   fieldhockey: Sports.FieldHockey,
   football: Sports.Football,
   handball: Sports.Handball,
-  tabletennis: Sports.TableTennis,
-  tennis: Sports.Tennis,
   volleyball: Sports.Volleyball,
   waterpolo: Sports.WaterPolo,
 } as { [key: string]: number };
@@ -29,13 +21,9 @@ export const sportByLink = {
 export const sportsNames = {
   [Sports.Basketball]: 'Basketball',
   [Sports.Basketball3x3]: 'Basketball 3x3',
-  [Sports.Badminton]: 'Badminton',
-  [Sports.BeachVolley]: 'Beach Volley',
   [Sports.FieldHockey]: 'Field Hockey',
   [Sports.Football]: 'Football',
   [Sports.Handball]: 'Handball',
-  [Sports.TableTennis]: 'Table Tennis',
-  [Sports.Tennis]: 'Tennis',
   [Sports.Volleyball]: 'Volleyball',
   [Sports.WaterPolo]: 'Water Polo',
 } as { [key in Sports]: string };

@@ -1,14 +1,3 @@
-import {
-  mdiBadminton,
-  mdiBasketball,
-  mdiHandball,
-  mdiHockeySticks,
-  mdiSoccer,
-  mdiTableTennis,
-  mdiTennis,
-  mdiVolleyball,
-  mdiWaterPolo,
-} from '@mdi/js';
 import classNames from 'classnames';
 import React from 'react';
 import { Sports, sportsNames } from '@/lib/values';
@@ -25,14 +14,6 @@ export default function SidebarNav({ className }: ComponentProps) {
       link: '/basketball3x3',
     },
     {
-      name: sportsNames[Sports.Badminton],
-      link: '/badminton',
-    },
-    {
-      name: sportsNames[Sports.BeachVolley],
-      link: '/beachvolley',
-    },
-    {
       name: sportsNames[Sports.FieldHockey],
       link: '/fieldhockey',
     },
@@ -43,14 +24,6 @@ export default function SidebarNav({ className }: ComponentProps) {
     {
       name: sportsNames[Sports.Handball],
       link: '/handball',
-    },
-    {
-      name: sportsNames[Sports.TableTennis],
-      link: '/tabletennis',
-    },
-    {
-      name: sportsNames[Sports.Tennis],
-      link: '/tennis',
     },
     {
       name: sportsNames[Sports.Volleyball],
