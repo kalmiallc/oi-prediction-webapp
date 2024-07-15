@@ -10,10 +10,16 @@ type Action =
       type: 'addBets';
       payload: { address: `0x${string}`; bets: Bet[] };
     }
+  | {
+      type: 'addEvents';
+      payload: SportEvent[];
+    }
   | { type: 'setTimestamp'; payload: number };
+
 type State = {
   timestamp?: number;
   bets: { [address: `0x${string}`]: Bet[] };
+  events: SportEvent[];
 };
 // #endregion
 
@@ -21,6 +27,7 @@ const initialState = () =>
   ({
     timestamp: undefined,
     bets: {},
+    events: [],
   }) as State;
 
 function reducer(state: State, action: Action) {
@@ -29,6 +36,14 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         bets: { ...state.bets, [action.payload.address]: action.payload.bets },
+      };
+    }
+    case 'addEvents': {
+      const track = new Set();
+      const arr = [...state.events, ...action.payload];
+      return {
+        ...state,
+        events: arr.filter(({ uid }) => (track.has(uid) ? false : track.add(uid))),
       };
     }
     case 'setTimestamp': {
@@ -44,7 +59,7 @@ function reducer(state: State, action: Action) {
 }
 
 const GlobalContext = createContext<
-  { state: State; dispatch: (action: Action) => void; loadBets: () => void } | undefined
+  { state: State; dispatch: (action: Action) => void } | undefined
 >(undefined);
 
 function GlobalProvider({ children }: { children: ReactNode }) {
@@ -52,28 +67,7 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   const config = useConfig();
   const { address } = useAccount();
 
-  async function loadBets() {
-    if (!address || !state.timestamp) {
-      return;
-    }
-    const bets = (await readContract(config, {
-      abi: betAbi,
-      address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
-      functionName: 'getBetsByDateAndUser',
-      args: [state.timestamp, address],
-    } as any)) as Bet[];
-
-    dispatch({
-      type: 'addBets',
-      payload: { address, bets },
-    });
-  }
-
-  return (
-    <GlobalContext.Provider value={{ state, dispatch, loadBets }}>
-      {children}
-    </GlobalContext.Provider>
-  );
+  return <GlobalContext.Provider value={{ state, dispatch }}>{children}</GlobalContext.Provider>;
 }
 
 function useGlobalContext() {

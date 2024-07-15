@@ -1,64 +1,78 @@
-import React from 'react';
-import { useAccount } from 'wagmi';
+import React, { useEffect, useState } from 'react';
+import { useAccount, useReadContract } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
-import { formatUnits } from 'viem';
-import { Button, Divider, Stack } from '@mui/material';
-import dayjs from 'dayjs';
-import useContract from '@/hooks/useContract';
+import { Divider, Stack } from '@mui/material';
+import EventBetListItem from './EventBetListItem';
 import classNames from 'classnames';
+import { ContractType, getContractAddressForEnv } from '../../../lib/contracts';
+import { betAbi } from '../../../lib/abi';
 
-export default function EventBetList({
-  event,
-}: { event: SportEvent; choice: number } & ComponentProps) {
-  const { state } = useGlobalContext();
+export default function EventBetList({ className }: ComponentProps) {
+  const {
+    state: { timestamp },
+  } = useGlobalContext();
   const { address } = useAccount();
-  const { claimBet } = useContract();
+  const [bets, setBets] = useState<Bet[]>([]);
+  const [events, setEvents] = useState<SportEvent[]>([]);
+  const [eventUids, setEventUids] = useState<string[]>([]);
 
-  const bets = address ? state.bets?.[address]?.filter(x => x.eventUUID === event.uuid) : [];
-  function parseBetAmount(amount: bigint) {
-    return formatUnits(amount, 18);
+  const contract = {
+    abi: betAbi,
+    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+  };
+  const { data: betData } = useReadContract({
+    ...contract,
+    functionName: 'getBetsByDateAndUser',
+    args: [timestamp, address],
+  });
+  const { data: eventData, refetch } = useReadContract({
+    ...contract,
+    functionName: 'getEvents',
+    args: [eventUids],
+  });
+
+  function getEvent(uid: string) {
+    return events.find(x => x.uid === uid);
   }
 
-  return (
-    <div>
-      {!!address && !!bets?.length && (
-        <div className="mt-6">
-          <div className="text-lg font-bold mb-2">Your Bets</div>
-          <Stack gap={1} divider={<Divider flexItem />}>
-            <div className="flex justify-between font-bold text-sm ">
-              <div>Bet</div>
-              <div>Amount</div>
-              <div>Time</div>
-              {event.winner !== 0 && <div></div>}
-            </div>
-            {bets.map(bet => (
-              <div
-                key={bet.id}
-                className={classNames([
-                  'grid ',
-                  event.winner !== 0 ? 'grid-cols-4' : 'grid-cols-3',
-                ])}
-              >
-                <div>{event.choices[bet.betChoice]?.choiceName}</div>
-                <div className="text-center">
-                  {parseBetAmount(bet.betAmount)}
-                  <span className="text-xs ml-1">
-                    x{(Number(bet.winMultiplier) / 1000).toFixed(2)}
-                  </span>
-                </div>
-                <div className="text-end">{dayjs(Number(bet.betTimestamp) * 1000).fromNow()}</div>
+  useEffect(() => {
+    if (Array.isArray(betData)) {
+      if (betData.length) {
+        setBets(betData);
+        setEventUids([...new Set(betData.map(x => x.eventUID))]);
+        refetch();
+      } else {
+        setBets([]);
+      }
+    }
+  }, [betData]);
 
-                {event.winner !== 0 && (
-                  <div className="text-center">
-                    <Button className="" size="small" onClick={() => claimBet(bet.id)}>
-                      Claim
-                    </Button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </Stack>
-        </div>
+  useEffect(() => {
+    if (Array.isArray(eventData)) {
+      if (eventData.length) {
+        setEvents(eventData);
+      }
+    }
+  }, [eventData]);
+
+  return (
+    <div className={classNames([className], 'bg-white rounded-[24px]', 'px-8 py-10')}>
+      {!!address && !!events?.length && !!bets?.length ? (
+        <Stack gap={1} divider={<Divider flexItem className="text-gray" />}>
+          <div className="grid grid-cols-6 font-bold">
+            <div>Bet</div>
+            <div>Amount</div>
+            <div>Multiplier</div>
+            <div>Result</div>
+            <div>Winnings</div>
+            <div className="col-span-2"></div>
+          </div>
+          {bets.map(bet => (
+            <EventBetListItem key={bet.id} bet={bet} event={getEvent(bet.eventUID)} />
+          ))}
+        </Stack>
+      ) : (
+        <div>No bets placed this day</div>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import SidebarSports from './SidebarSports';
+import SidebarNav from './SidebarNav';
 
 export default function Sidebar() {
   return (
@@ -11,13 +11,13 @@ export default function Sidebar() {
           'bg-white',
           'shadow-[0_0_4px_0] shadow-black/25',
           'hidden overflow-x-clip lg:block py-6',
-          'min-w-[250px] min-h-[calc(100vh-100px)]',
+          'min-w-[250px] min-h-[calc(100vh-100px)] h-full',
           'sticky top-[100px]',
         ])}
       >
         <div style={{ transition: 'width 150ms cubic-bezier(0.4, 0, 0.2, 1)' }}>
           <div>
-            <SidebarSports />
+            <SidebarNav />
           </div>
         </div>
       </aside>

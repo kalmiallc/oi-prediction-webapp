@@ -22,13 +22,13 @@ export default function Header() {
             <Icon path={mdiMenu}></Icon>
           </Button>
           <Link href={'/'} className="hidden md:block">
-            <Image src="/images/logo.png" alt="Flare Logo" height={65} width={188} />
+            <Image src="/images/logo.png" alt="Flare Logo" height={35} width={101} />
           </Link>
           <Image
             src="/images/olympics-logo.png"
             alt="Olympics Logo"
-            height={65}
-            width={146}
+            height={80}
+            width={80}
             className="hidden md:block"
           />
         </div>
