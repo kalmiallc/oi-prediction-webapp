@@ -1,6 +1,6 @@
 import '@/assets/main.css';
 import type { AppProps } from 'next/app';
-import BaseLayout from '../components/layouts/BaseLayout';
+import BaseLayout from '@/components/layouts/BaseLayout';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { WagmiProvider } from 'wagmi';
 import { defaultWagmiConfig } from '@web3modal/wagmi';

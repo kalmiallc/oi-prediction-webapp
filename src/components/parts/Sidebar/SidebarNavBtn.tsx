@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { UrlObject } from 'url';
 import { Button } from '@mui/material';
 import Link from 'next/link';
 
@@ -28,7 +27,7 @@ export default function SidebarNavBtn({
       href={href}
       className={classNames([
         className,
-        'flex text-black py-1 pl-12 normal-case text-xl justify-start',
+        'flex text-black py-2 pl-12 normal-case text-xl justify-start',
         {
           [activeClass]: isActive && !disableActive,
         },

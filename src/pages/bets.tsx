@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
-import DatePicker from '../components/inputs/DatePicker';
-import EventBetList from '../components/parts/Event/EventBetList';
+import DatePicker from '@/components/inputs/DatePicker';
+import EventBetList from '@/components/parts/Event/EventBetList';
 import dayjs, { Dayjs } from 'dayjs';
-import { useGlobalContext } from '../contexts/global';
-import { useAccount, useReadContract, useReadContracts } from 'wagmi';
-import { betAbi } from '../lib/abi';
-import { ContractType, getContractAddressForEnv } from '../lib/contracts';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function BetsPage() {
   const { dispatch, state } = useGlobalContext();

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
-import NumberInput from '../../inputs/NumberInput';
-import useFormSchema from '../../../hooks/useFormSchema';
+import NumberInput from '@/components/inputs/NumberInput';
+import useFormSchema from '@/hooks/useFormSchema';
 import { Controller } from 'react-hook-form';
 import EventBetMultiplier from './EventBetMultiplier';
-import useDebounce from '../../../hooks/useDebounce';
+import useDebounce from '@/hooks/useDebounce';
 
 export default function EventBetInput({
   event,
