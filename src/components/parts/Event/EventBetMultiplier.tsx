@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { getContractAddressForEnv } from '@/lib/contracts';
 import classNames from 'classnames';
 import { formatEther, parseEther } from 'viem';
 
@@ -16,7 +16,7 @@ export default function EventBetMultiplier({
   const [newReturn, setNewReturn] = useState(initial * amount);
   const { data: aproxReturn, refetch } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForEnv(process.env.NODE_ENV),
     functionName: 'calculateAproximateBetReturn',
     args: [parseEther(amount.toString()), choice, event],
   });

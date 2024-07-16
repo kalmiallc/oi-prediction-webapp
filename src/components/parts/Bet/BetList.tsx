@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
-import { Divider, Stack } from '@mui/material';
-import EventBetListItem from './EventBetListItem';
+import { CircularProgress, Divider, Stack } from '@mui/material';
+import BetListItem from './BetListItem';
 import classNames from 'classnames';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
 
-export default function EventBetList({ className }: ComponentProps) {
+export default function BetList({ className }: ComponentProps) {
   const {
     state: { timestamp },
   } = useGlobalContext();
@@ -18,14 +18,19 @@ export default function EventBetList({ className }: ComponentProps) {
 
   const contract = {
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForEnv(process.env.NODE_ENV),
   };
-  const { data: betData } = useReadContract({
+  const {
+    data: betData,
+    refetch: refetchBets,
+    isLoading,
+  } = useReadContract({
     ...contract,
     functionName: 'getBetsByDateAndUser',
     args: [timestamp, address],
+    query: { staleTime: 5 * 60 * 1000 },
   });
-  const { data: eventData, refetch } = useReadContract({
+  const { data: eventData, refetch: refetchEvents } = useReadContract({
     ...contract,
     functionName: 'getEvents',
     args: [eventUids],
@@ -40,7 +45,7 @@ export default function EventBetList({ className }: ComponentProps) {
       if (betData.length) {
         setBets(betData);
         setEventUids([...new Set(betData.map(x => x.eventUID))]);
-        refetch();
+        refetchEvents();
       } else {
         setBets([]);
       }
@@ -65,12 +70,24 @@ export default function EventBetList({ className }: ComponentProps) {
             <div>Multiplier</div>
             <div>Result</div>
             <div>Winnings</div>
-            <div className="col-span-2"></div>
+            <div></div>
           </div>
-          {bets.map(bet => (
-            <EventBetListItem key={bet.id} bet={bet} event={getEvent(bet.eventUID)} />
-          ))}
+          {bets.map(
+            bet =>
+              !!getEvent(bet.eventUID) && (
+                <BetListItem
+                  key={bet.id}
+                  bet={bet}
+                  event={getEvent(bet.eventUID) as SportEvent}
+                  onClaim={refetchBets}
+                />
+              )
+          )}
         </Stack>
+      ) : isLoading ? (
+        <div className="text-center">
+          <CircularProgress size={40} />
+        </div>
       ) : (
         <div>No bets placed this day</div>
       )}

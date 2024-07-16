@@ -1,6 +1,6 @@
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { getContractAddressForEnv } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
 import { useEffect, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
@@ -28,9 +28,10 @@ export default function SportPage() {
 
   const { data, refetch, isLoading } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForEnv(process.env.NODE_ENV),
     functionName: 'getSportEventsByDateAndSport',
     args: [state.timestamp, sport],
+    query: { staleTime: 1 * 60 * 1000 },
   });
 
   function getMappedEvents() {

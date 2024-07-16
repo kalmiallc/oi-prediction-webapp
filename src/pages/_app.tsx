@@ -4,7 +4,7 @@ import BaseLayout from '@/components/layouts/BaseLayout';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { WagmiProvider } from 'wagmi';
 import { defaultWagmiConfig } from '@web3modal/wagmi';
-import { flareTestnet, songbird, songbirdTestnet } from 'viem/chains';
+import { flareTestnet, songbird } from 'viem/chains';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';

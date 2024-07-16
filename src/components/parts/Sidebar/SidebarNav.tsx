@@ -34,12 +34,14 @@ export default function SidebarNav({ className }: ComponentProps) {
       link: '/waterpolo',
     },
   ];
+  const isAdmin = true;
   return (
     <div className={classNames(['overflow-y-auto overflow-x-hidden break-words', className])}>
-      <div className="">
-        <SidebarNavBtn href="/bets" className="mb-4">
-          My bets
-        </SidebarNavBtn>
+      <div>
+        <div className="mb-4">
+          <SidebarNavBtn href="/bets">My bets</SidebarNavBtn>
+          {isAdmin && <SidebarNavBtn href="/bets/admin">All bets</SidebarNavBtn>}
+        </div>
         {sports.map((sport, i) => (
           <SidebarNavBtn key={'sport-' + i} href={sport.link}>
             {sport.name}

@@ -1,8 +1,4 @@
-import { betAbi } from '@/lib/abi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
-import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
-import { readContract } from '@wagmi/core';
-import { useAccount, useConfig } from 'wagmi';
+import { createContext, ReactNode, useContext, useReducer } from 'react';
 
 // #region types
 type Action = { type: 'setTimestamp'; payload: number | undefined };

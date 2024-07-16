@@ -1,17 +1,17 @@
 import { parseEther } from 'viem';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
-import { flareTestnet, songbird } from 'viem/chains';
+import { flareTestnet } from 'viem/chains';
 
 export default function useContract() {
   const { data: hash, writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
-  // const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-  //   hash,
-  // });
+  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   async function check() {
     if (!address) {
@@ -32,7 +32,7 @@ export default function useContract() {
     }
   }
 
-  const contractAddress = getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV);
+  const contractAddress = getContractAddressForEnv(process.env.NODE_ENV);
 
   async function placeBet(betUuid: string, choiceId: number, amount: number) {
     await check();
@@ -65,5 +65,10 @@ export default function useContract() {
     });
   }
 
-  return { placeBet, claimBet, isPending: isPending || isPendingChain };
+  return {
+    placeBet,
+    claimBet,
+    isPending: isPending || isPendingChain,
+    transactionConfirm: isConfirmed,
+  };
 }

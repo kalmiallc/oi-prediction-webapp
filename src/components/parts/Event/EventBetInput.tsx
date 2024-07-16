@@ -44,7 +44,7 @@ export default function EventBetInput({
 
   return (
     <div className="flex flex-col  w-full max-w-[220px]">
-      <form onSubmit={handleSubmit(data => onBet(data.bet))} className="">
+      <form onSubmit={handleSubmit(data => onBet(data.bet))} noValidate className="">
         <div className="text-gray text-sm mb-2">{choiceName}</div>
         <div className="flex min-w-[150px] border-primary rounded-lg bg-primary">
           <Controller

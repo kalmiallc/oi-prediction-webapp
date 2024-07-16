@@ -1,9 +1,13 @@
 export enum Sports {
   Basketball,
   Basketball3x3,
+  Badminton,
+  BeachVolley,
   FieldHockey,
   Football,
   Handball,
+  TableTennis,
+  Tennis,
   Volleyball,
   WaterPolo,
 }

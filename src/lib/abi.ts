@@ -82,16 +82,7 @@ export const betAbi = [
   {
     type: 'function',
     stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
-      { type: 'address', name: 'bettor', internalType: 'address' },
-      { type: 'uint256', name: 'betAmount', internalType: 'uint256' },
-      { type: 'uint256', name: 'winMultiplier', internalType: 'uint256' },
-      { type: 'uint256', name: 'betTimestamp', internalType: 'uint256' },
-      { type: 'uint16', name: 'betChoice', internalType: 'uint16' },
-      { type: 'bool', name: 'claimed', internalType: 'bool' },
-    ],
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
     name: 'betsByDateAndUser',
     inputs: [
       { type: 'uint256', name: '', internalType: 'uint256' },
@@ -112,16 +103,7 @@ export const betAbi = [
   {
     type: 'function',
     stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
-      { type: 'address', name: 'bettor', internalType: 'address' },
-      { type: 'uint256', name: 'betAmount', internalType: 'uint256' },
-      { type: 'uint256', name: 'winMultiplier', internalType: 'uint256' },
-      { type: 'uint256', name: 'betTimestamp', internalType: 'uint256' },
-      { type: 'uint16', name: 'betChoice', internalType: 'uint16' },
-      { type: 'bool', name: 'claimed', internalType: 'bool' },
-    ],
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
     name: 'betsByEvent',
     inputs: [
       { type: 'bytes32', name: '', internalType: 'bytes32' },
@@ -131,16 +113,7 @@ export const betAbi = [
   {
     type: 'function',
     stateMutability: 'view',
-    outputs: [
-      { type: 'uint256', name: 'id', internalType: 'uint256' },
-      { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
-      { type: 'address', name: 'bettor', internalType: 'address' },
-      { type: 'uint256', name: 'betAmount', internalType: 'uint256' },
-      { type: 'uint256', name: 'winMultiplier', internalType: 'uint256' },
-      { type: 'uint256', name: 'betTimestamp', internalType: 'uint256' },
-      { type: 'uint16', name: 'betChoice', internalType: 'uint16' },
-      { type: 'bool', name: 'claimed', internalType: 'bool' },
-    ],
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
     name: 'betsByEventStartDate',
     inputs: [
       { type: 'uint256', name: '', internalType: 'uint256' },
@@ -192,10 +165,12 @@ export const betAbi = [
     inputs: [
       { type: 'string', name: 'title', internalType: 'string' },
       { type: 'uint256', name: 'startTime', internalType: 'uint256' },
+      { type: 'uint8', name: 'gender', internalType: 'uint8' },
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
       { type: 'string[]', name: 'choices', internalType: 'string[]' },
       { type: 'uint32[]', name: 'initialVotes', internalType: 'uint32[]' },
       { type: 'uint256', name: 'initialPool', internalType: 'uint256' },
+      { type: 'bytes32', name: '_uid', internalType: 'bytes32' },
     ],
   },
   {
@@ -204,9 +179,10 @@ export const betAbi = [
     outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
     name: 'generateUID',
     inputs: [
-      { type: 'string', name: 'title', internalType: 'string' },
-      { type: 'uint256', name: 'startTime', internalType: 'uint256' },
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
+      { type: 'uint8', name: 'gender', internalType: 'uint8' },
+      { type: 'uint256', name: 'startTime', internalType: 'uint256' },
+      { type: 'string', name: 'title', internalType: 'string' },
     ],
   },
   {
@@ -373,6 +349,7 @@ export const betAbi = [
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
+          { type: 'uint8', name: 'gender', internalType: 'uint8' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -405,6 +382,7 @@ export const betAbi = [
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
+          { type: 'uint8', name: 'gender', internalType: 'uint8' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -437,6 +415,7 @@ export const betAbi = [
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
+          { type: 'uint8', name: 'gender', internalType: 'uint8' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -501,6 +480,7 @@ export const betAbi = [
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
       { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
       { type: 'uint16', name: 'winner', internalType: 'uint16' },
+      { type: 'uint8', name: 'gender', internalType: 'uint8' },
     ],
     name: 'sportEvents',
     inputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
@@ -508,14 +488,7 @@ export const betAbi = [
   {
     type: 'function',
     stateMutability: 'view',
-    outputs: [
-      { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
-      { type: 'string', name: 'title', internalType: 'string' },
-      { type: 'uint256', name: 'startTime', internalType: 'uint256' },
-      { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
-      { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
-      { type: 'uint16', name: 'winner', internalType: 'uint16' },
-    ],
+    outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
     name: 'sportEventsByDateAndSport',
     inputs: [
       { type: 'uint256', name: '', internalType: 'uint256' },

@@ -41,4 +41,5 @@ interface Bet {
   winMultiplier: bigint;
   betTimestamp: bigint;
   betChoice: ChoiceId;
+  claimed?: boolean;
 }

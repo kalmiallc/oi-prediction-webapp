@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import EventBetModal from './EventBetModal';
+import EventBetConfirmModal from './EventBetConfirmModal';
 import EventBetInput from './EventBetInput';
 import { formatEther } from 'viem';
 dayjs.extend(relativeTime);
@@ -40,11 +40,13 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
     <div className="relative mt-10 w-full">
       <div
         className={classNames([
-          'absolute px-5 h-full z-0 w-1/2 pt-3.5 -top-10 rounded-t-[24px]',
+          'absolute px-5 h-full z-0 w-full pt-3.5 -top-10 rounded-t-[24px]',
           'bg-secondary text-white font-bold text-sm',
           'shadow-[0_4px_4px_0] shadow-black/25',
+          'justify-between flex',
         ])}
       >
+        <p>{event.title}</p>
         <p>Pool total: {formatEther(event.poolAmount)} FLR</p>
       </div>
 
@@ -70,11 +72,19 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
                 <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
                   {choice.choiceId === 3 ? 'vs' : choice.choiceName}
                 </h3>
-                <EventBetInput
-                  event={event}
-                  choice={choice}
-                  onBet={x => onBet(x, choice.choiceIndex as number)}
-                />
+                {event.winner === 0 ? (
+                  <EventBetInput
+                    event={event}
+                    choice={choice}
+                    onBet={x => onBet(x, choice.choiceIndex as number)}
+                  />
+                ) : (
+                  <div className="text-center text-gray pb-10">
+                    {event.winner === choice.choiceId && (
+                      <div>{choice.choiceId === 3 ? 'Draw!' : 'Winner!'}</div>
+                    )}
+                  </div>
+                )}
               </div>
               {!hasDraw && i === 0 && (
                 <div
@@ -87,7 +97,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
             </>
           ))}
         </div>
-        <EventBetModal event={event} data={betData} onClose={() => setBetData(null)} />
+        <EventBetConfirmModal event={event} data={betData} onClose={() => setBetData(null)} />
       </div>
     </div>
   );

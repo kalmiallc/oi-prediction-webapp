@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DatePicker from '@/components/inputs/DatePicker';
-import EventBetList from '@/components/parts/Event/EventBetList';
+import BetList from '@/components/parts/Bet/BetList';
 import dayjs, { Dayjs } from 'dayjs';
 import { useGlobalContext } from '@/contexts/global';
 
@@ -24,7 +24,7 @@ export default function BetsPage() {
         <h1 className="text-black text-[32px] font-bold shrink-0">My bets</h1>
         <DatePicker value={date} className="max-w-[150px]" onChange={e => setDate(e)} />
       </div>
-      <EventBetList />
+      <BetList />
     </div>
   );
 }
