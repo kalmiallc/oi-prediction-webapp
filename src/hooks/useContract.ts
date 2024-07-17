@@ -3,7 +3,7 @@ import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWriteContr
 import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
-import { flareTestnet } from 'viem/chains';
+import { songbirdTestnet } from 'viem/chains';
 
 export default function useContract() {
   const { data: hash, writeContractAsync, isPending } = useWriteContract();
@@ -21,8 +21,8 @@ export default function useContract() {
     if (!chainId) {
       toast.error('Please connect the wallet to the required chain');
     } else {
-      const requiredChainId = flareTestnet.id;
-      // process.env.NODE_ENV === 'production' ? songbird.id : flareTestnet.id;
+      const requiredChainId = songbirdTestnet.id;
+      // process.env.NODE_ENV === 'production' ? songbird.id : songbirdTestnet.id;
 
       if (chainId !== requiredChainId) {
         toast.warning('Please connect the wallet to the required chain');

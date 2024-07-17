@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatUnits } from 'viem';
-import { Button } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import classNames from 'classnames';
@@ -28,9 +28,25 @@ export default function BetListItem({
   const hasWon = event?.winner === choice?.choiceId;
   const pending = event?.winner === 0;
   return (
-    <div className={classNames(['grid grid-cols-6 items-center', className])}>
+    <div className={classNames(['grid grid-cols-7 items-center', className])}>
+      <Tooltip
+        title={event?.title}
+        placement="top"
+        PopperProps={{
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, -14],
+              },
+            },
+          ],
+        }}
+      >
+        <div className="truncate">{event?.title}</div>
+      </Tooltip>
       <div>{choice?.choiceName}</div>
-      <div>{parseBetAmount(bet.betAmount)} FLR</div>
+      <div>{parseBetAmount(bet.betAmount)} SGB</div>
       <div>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</div>
       <div>
         {event &&
@@ -40,8 +56,8 @@ export default function BetListItem({
         {pending
           ? 'Pending'
           : hasWon
-            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) + ' FLR'
-            : '0 FLR'}
+            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) + ' SGB'
+            : '0 SGB'}
       </div>
       {(pending || hasWon) && (
         <div className="text-center">

@@ -17,7 +17,7 @@ type Winner = 0 | ChoiceId;
 interface SportEvent {
   uid: string;
   title: string;
-  startTime: number;
+  startTime: bigint;
   duration: number;
   sport: string;
   poolAmount: bigint;
@@ -42,4 +42,8 @@ interface Bet {
   betTimestamp: bigint;
   betChoice: ChoiceId;
   claimed?: boolean;
+}
+
+interface BetWithEvent extends Bet {
+  event: SportEvent;
 }

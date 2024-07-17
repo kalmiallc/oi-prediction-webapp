@@ -49,7 +49,7 @@ export default function EventBetConfirmModal({
         <p>
           {choice}
           {choice.toLowerCase() !== 'draw' ? ' to win: ' : ': '}
-          <span className="font-bold">{data.amount} FLR</span>
+          <span className="font-bold">{data.amount} SGB</span>
         </p>
       </div>
     </Modal>

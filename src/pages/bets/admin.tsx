@@ -19,7 +19,7 @@ export default function AdminBetsPage() {
   }, [date]);
 
   return (
-    <div className="md:px-10 lg:px-14 xl:px-24 md:max-w-[1200px] m-auto">
+    <div className="md:px-10 lg:px-14 xl:px-24 md:max-w-[1400px] m-auto">
       <div className="flex md:flex-nowrap flex-wrap justify-between mb-8 items-center gap-4">
         <h1 className="text-black text-[32px] font-bold shrink-0">All bets</h1>
         <DatePicker value={date} className="max-w-[150px]" onChange={e => setDate(e)} />

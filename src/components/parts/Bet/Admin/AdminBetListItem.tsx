@@ -22,13 +22,29 @@ export default function AdminBetListItem({
   return (
     <div
       className={classNames([
-        'grid grid-cols-[repeat(13,minmax(0,1fr))] items-center overflow-hidden',
+        'grid grid-cols-[repeat(15,minmax(0,1fr))] items-center overflow-hidden',
         className,
       ])}
     >
       <div>{Number(bet.id)}</div>
+      <Tooltip
+        title={event?.title}
+        placement="top"
+        PopperProps={{
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, -14],
+              },
+            },
+          ],
+        }}
+      >
+        <div className="truncate col-span-2">{event?.title}</div>
+      </Tooltip>
       <div className="col-span-2">{choice?.choiceName}</div>
-      <div className="col-span-2">{parseBetAmount(bet.betAmount)} FLR</div>
+      <div className="col-span-2">{parseBetAmount(bet.betAmount)} SGB</div>
       <div className="col-span-2">x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</div>
       <div className="col-span-2">
         {event &&
@@ -38,8 +54,8 @@ export default function AdminBetListItem({
         {pending
           ? 'Pending'
           : hasWon
-            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) + ' FLR'
-            : '0 FLR'}
+            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) + ' SGB'
+            : '0 SGB'}
       </div>
       <Tooltip
         title={bet.bettor}
