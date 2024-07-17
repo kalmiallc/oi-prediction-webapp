@@ -49,7 +49,7 @@ export default function EventBetMultiplier({
         <span className="text-black font-bold">x{(newMulti || initial).toFixed(2)}</span>
       </div>
       <div>
-        Potential FLR Returns:{' '}
+        Potential SGB Returns:{' '}
         <span className="text-black font-bold">{(newReturn || initial * amount).toFixed(2)}</span>
       </div>
     </div>

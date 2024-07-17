@@ -59,7 +59,7 @@ export default function BetClaimModal({
         <p>
           Winnings:{' '}
           <span className="font-bold">
-            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)} FLR
+            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)} SGB
           </span>
         </p>
       </div>

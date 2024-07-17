@@ -5,6 +5,7 @@ import useFormSchema from '@/hooks/useFormSchema';
 import { Controller } from 'react-hook-form';
 import EventBetMultiplier from './EventBetMultiplier';
 import useDebounce from '@/hooks/useDebounce';
+import { formatEther } from 'viem';
 
 export default function EventBetInput({
   event,
@@ -14,17 +15,20 @@ export default function EventBetInput({
   const { debounce } = useDebounce();
 
   const [debouncedBet, setDebouncedBet] = useState(0);
-  const maxAmount = Number(event.poolAmount);
+  const maxAmount = Number(formatEther(event.poolAmount)) / 10;
 
   const schema = z.object({
-    bet: z.number().min(0.01, 'Invalid amount').max(maxAmount, 'Invalid amount'),
+    bet: z
+      .number()
+      .min(0.01, 'Invalid amount')
+      .max(maxAmount, 'Amount can not go over 10% of the pool'),
   });
 
   const {
     control,
     handleSubmit,
     watch,
-
+    trigger,
     formState: { errors },
   } = useFormSchema(schema);
   const watchBet = watch('bet');
@@ -38,14 +42,12 @@ export default function EventBetInput({
   }, [watchBet]);
 
   const choiceName =
-    choice.choiceIndex && choice.choiceIndex > 1
-      ? choice.choiceName
-      : choice.choiceName + ' to win';
+    choice.choiceIndex && choice.choiceIndex > 1 ? 'Draw' : choice.choiceName + ' to win';
 
   return (
-    <div className="flex flex-col  w-full max-w-[220px]">
-      <form onSubmit={handleSubmit(data => onBet(data.bet))} noValidate className="">
-        <div className="text-gray text-sm mb-2">{choiceName}</div>
+    <div className="flex flex-col w-full max-w-[220px]">
+      <form onSubmit={handleSubmit(data => onBet(data.bet))} noValidate>
+        <div className="text-gray text-sm mb-2 ">{choiceName}</div>
         <div className="flex min-w-[150px] border-primary rounded-lg bg-primary">
           <Controller
             control={control}
@@ -54,11 +56,9 @@ export default function EventBetInput({
             render={({ field: { value, onChange } }) => (
               <NumberInput
                 value={value}
-                min={0}
                 step={0.1}
-                max={maxAmount}
                 className="!ring-primary flex-grow"
-                onChange={e => onChange(Math.max(Number(e.target.value), 0))}
+                onChange={e => (onChange(Math.max(Number(e.target.value), 0)), trigger())}
               ></NumberInput>
             )}
           />

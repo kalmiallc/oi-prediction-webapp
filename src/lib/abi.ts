@@ -1,5 +1,9 @@
 export const betAbi = [
-  { type: 'constructor', stateMutability: 'nonpayable', inputs: [] },
+  {
+    type: 'constructor',
+    stateMutability: 'nonpayable',
+    inputs: [{ type: 'address', name: '_verification', internalType: 'address' }],
+  },
   {
     type: 'event',
     name: 'BetPlaced',
@@ -10,6 +14,12 @@ export const betAbi = [
       { type: 'uint256', name: 'amount', internalType: 'uint256', indexed: false },
       { type: 'uint16', name: 'choice', internalType: 'uint16', indexed: false },
     ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
+    name: 'BetRefunded',
+    inputs: [{ type: 'bytes32', name: 'eventUID', internalType: 'bytes32', indexed: false }],
     anonymous: false,
   },
   {
@@ -131,6 +141,23 @@ export const betAbi = [
     type: 'function',
     stateMutability: 'view',
     outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+    name: 'betsByUser',
+    inputs: [
+      { type: 'address', name: '', internalType: 'address' },
+      { type: 'uint256', name: '', internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+    name: 'betsByUserLength',
+    inputs: [{ type: 'address', name: 'user', internalType: 'address' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
     name: 'calculateAproximateBetReturn',
     inputs: [
       { type: 'uint256', name: 'amount', internalType: 'uint256' },
@@ -171,6 +198,71 @@ export const betAbi = [
       { type: 'uint32[]', name: 'initialVotes', internalType: 'uint32[]' },
       { type: 'uint256', name: 'initialPool', internalType: 'uint256' },
       { type: 'bytes32', name: '_uid', internalType: 'bytes32' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'payable',
+    outputs: [],
+    name: 'editSportEvent',
+    inputs: [
+      { type: 'bytes32', name: '_uid', internalType: 'bytes32' },
+      { type: 'string', name: 'title', internalType: 'string' },
+      { type: 'uint256', name: 'startTime', internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'bool', name: '', internalType: 'bool' }],
+    name: 'eventRefund',
+    inputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
+    name: 'finalizeMatch',
+    inputs: [
+      {
+        type: 'tuple',
+        name: 'proof',
+        internalType: 'struct MatchResult.Proof',
+        components: [
+          { type: 'bytes32[]', name: 'merkleProof', internalType: 'bytes32[]' },
+          {
+            type: 'tuple',
+            name: 'data',
+            internalType: 'struct MatchResult.Response',
+            components: [
+              { type: 'bytes32', name: 'attestationType', internalType: 'bytes32' },
+              { type: 'bytes32', name: 'sourceId', internalType: 'bytes32' },
+              { type: 'uint64', name: 'votingRound', internalType: 'uint64' },
+              { type: 'uint64', name: 'lowestUsedTimestamp', internalType: 'uint64' },
+              {
+                type: 'tuple',
+                name: 'requestBody',
+                internalType: 'struct MatchResult.RequestBody',
+                components: [
+                  { type: 'uint256', name: 'date', internalType: 'uint256' },
+                  { type: 'uint32', name: 'sport', internalType: 'uint32' },
+                  { type: 'uint8', name: 'gender', internalType: 'uint8' },
+                  { type: 'string', name: 'teams', internalType: 'string' },
+                ],
+              },
+              {
+                type: 'tuple',
+                name: 'responseBody',
+                internalType: 'struct MatchResult.ResponseBody',
+                components: [
+                  { type: 'uint256', name: 'timestamp', internalType: 'uint256' },
+                  { type: 'uint8', name: 'result', internalType: 'uint8' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
@@ -317,6 +409,56 @@ export const betAbi = [
     stateMutability: 'view',
     outputs: [
       {
+        type: 'tuple[]',
+        name: '',
+        internalType: 'struct OIBetShowcase.Bet[]',
+        components: [
+          { type: 'uint256', name: 'id', internalType: 'uint256' },
+          { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
+          { type: 'address', name: 'bettor', internalType: 'address' },
+          { type: 'uint256', name: 'betAmount', internalType: 'uint256' },
+          { type: 'uint256', name: 'winMultiplier', internalType: 'uint256' },
+          { type: 'uint256', name: 'betTimestamp', internalType: 'uint256' },
+          { type: 'uint16', name: 'betChoice', internalType: 'uint16' },
+          { type: 'bool', name: 'claimed', internalType: 'bool' },
+        ],
+      },
+    ],
+    name: 'getBetsByUser',
+    inputs: [{ type: 'address', name: 'user', internalType: 'address' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [
+      {
+        type: 'tuple[]',
+        name: '',
+        internalType: 'struct OIBetShowcase.Bet[]',
+        components: [
+          { type: 'uint256', name: 'id', internalType: 'uint256' },
+          { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
+          { type: 'address', name: 'bettor', internalType: 'address' },
+          { type: 'uint256', name: 'betAmount', internalType: 'uint256' },
+          { type: 'uint256', name: 'winMultiplier', internalType: 'uint256' },
+          { type: 'uint256', name: 'betTimestamp', internalType: 'uint256' },
+          { type: 'uint16', name: 'betChoice', internalType: 'uint16' },
+          { type: 'bool', name: 'claimed', internalType: 'bool' },
+        ],
+      },
+    ],
+    name: 'getBetsByUserFromTo',
+    inputs: [
+      { type: 'address', name: 'user', internalType: 'address' },
+      { type: 'uint256', name: 'from', internalType: 'uint256' },
+      { type: 'uint256', name: 'to', internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [
+      {
         type: 'tuple',
         name: '',
         internalType: 'struct OIBetShowcase.Choices',
@@ -457,6 +599,13 @@ export const betAbi = [
     type: 'function',
     stateMutability: 'nonpayable',
     outputs: [],
+    name: 'refund',
+    inputs: [{ type: 'uint256', name: '_betId', internalType: 'uint256' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
     name: 'renounceOwnership',
     inputs: [],
   },
@@ -502,5 +651,12 @@ export const betAbi = [
     outputs: [],
     name: 'transferOwnership',
     inputs: [{ type: 'address', name: 'newOwner', internalType: 'address' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'address', name: '', internalType: 'contract IMatchResultVerification' }],
+    name: 'verification',
+    inputs: [],
   },
 ];

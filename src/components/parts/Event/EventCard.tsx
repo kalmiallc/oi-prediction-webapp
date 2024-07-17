@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import EventBetConfirmModal from './EventBetConfirmModal';
 import EventBetInput from './EventBetInput';
 import { formatEther } from 'viem';
+import EventClaimButton from './EventClaimButton';
 dayjs.extend(relativeTime);
 
 export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
@@ -47,7 +48,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
         ])}
       >
         <p>{event.title}</p>
-        <p>Pool total: {formatEther(event.poolAmount)} FLR</p>
+        <p>Pool total: {formatEther(event.poolAmount)} SGB</p>
       </div>
 
       <div
@@ -68,7 +69,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
         >
           {choices.map((choice, i) => (
             <>
-              <div key={event.uid + '-' + i}>
+              <div className="w-full flex flex-col items-center" key={event.uid + '-' + i}>
                 <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
                   {choice.choiceId === 3 ? 'vs' : choice.choiceName}
                 </h3>
@@ -83,12 +84,13 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
                     {event.winner === choice.choiceId && (
                       <div>{choice.choiceId === 3 ? 'Draw!' : 'Winner!'}</div>
                     )}
+                    <EventClaimButton event={event} choice={choice.choiceId} />
                   </div>
                 )}
               </div>
               {!hasDraw && i === 0 && (
                 <div
-                  key={event.uid + '-' + 2}
+                  key={event.uid + '- vs'}
                   className={classNames(['font-bold text-[22px] text-center mb-6 hidden md:block'])}
                 >
                   vs

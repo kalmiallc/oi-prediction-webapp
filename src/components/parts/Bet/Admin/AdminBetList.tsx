@@ -59,8 +59,9 @@ export default function AdminBetList({ className }: ComponentProps) {
     <div className={classNames([className], 'bg-white rounded-[24px]', 'px-8 py-10')}>
       {!!events?.length && !!bets?.length ? (
         <Stack gap={1} divider={<Divider flexItem className="text-gray" />}>
-          <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] font-bold">
+          <div className="grid grid-cols-[repeat(15,minmax(0,1fr))] font-bold">
             <div className="col-span-1">Id</div>
+            <div className="col-span-2">Match</div>
             <div className="col-span-2">Bet</div>
             <div className="col-span-2">Amount</div>
             <div className="col-span-2">Multiplier</div>
