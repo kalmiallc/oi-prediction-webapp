@@ -69,6 +69,13 @@ export const betAbi = [
   {
     type: 'function',
     stateMutability: 'view',
+    outputs: [{ type: 'bool', name: '', internalType: 'bool' }],
+    name: 'authorizedAddresses',
+    inputs: [{ type: 'address', name: '', internalType: 'address' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
     outputs: [
       { type: 'uint256', name: 'id', internalType: 'uint256' },
       { type: 'bytes32', name: 'eventUID', internalType: 'bytes32' },
@@ -167,6 +174,13 @@ export const betAbi = [
   },
   {
     type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
+    name: 'cancelSportEvent',
+    inputs: [{ type: 'bytes32', name: '_uid', internalType: 'bytes32' }],
+  },
+  {
+    type: 'function',
     stateMutability: 'pure',
     outputs: [{ type: 'bool', name: '', internalType: 'bool' }],
     name: 'checkResultHash',
@@ -198,17 +212,6 @@ export const betAbi = [
       { type: 'uint32[]', name: 'initialVotes', internalType: 'uint32[]' },
       { type: 'uint256', name: 'initialPool', internalType: 'uint256' },
       { type: 'bytes32', name: '_uid', internalType: 'bytes32' },
-    ],
-  },
-  {
-    type: 'function',
-    stateMutability: 'payable',
-    outputs: [],
-    name: 'editSportEvent',
-    inputs: [
-      { type: 'bytes32', name: '_uid', internalType: 'bytes32' },
-      { type: 'string', name: 'title', internalType: 'string' },
-      { type: 'uint256', name: 'startTime', internalType: 'uint256' },
     ],
   },
   {
@@ -264,6 +267,13 @@ export const betAbi = [
         ],
       },
     ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
+    name: 'flipIsProduction',
+    inputs: [],
   },
   {
     type: 'function',
@@ -492,6 +502,7 @@ export const betAbi = [
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
           { type: 'uint8', name: 'gender', internalType: 'uint8' },
+          { type: 'bool', name: 'cancelled', internalType: 'bool' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -525,6 +536,7 @@ export const betAbi = [
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
           { type: 'uint8', name: 'gender', internalType: 'uint8' },
+          { type: 'bool', name: 'cancelled', internalType: 'bool' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -558,6 +570,7 @@ export const betAbi = [
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
           { type: 'uint16', name: 'winner', internalType: 'uint16' },
           { type: 'uint8', name: 'gender', internalType: 'uint8' },
+          { type: 'bool', name: 'cancelled', internalType: 'bool' },
           {
             type: 'tuple[]',
             name: 'choices',
@@ -577,6 +590,85 @@ export const betAbi = [
       { type: 'uint256', name: 'date', internalType: 'uint256' },
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
     ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [
+      {
+        type: 'tuple[]',
+        name: '',
+        internalType: 'struct OIBetShowcase.SportEvent[]',
+        components: [
+          { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
+          { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'uint256', name: 'startTime', internalType: 'uint256' },
+          { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
+          { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
+          { type: 'uint16', name: 'winner', internalType: 'uint16' },
+          { type: 'uint8', name: 'gender', internalType: 'uint8' },
+          { type: 'bool', name: 'cancelled', internalType: 'bool' },
+          {
+            type: 'tuple[]',
+            name: 'choices',
+            internalType: 'struct OIBetShowcase.Choices[]',
+            components: [
+              { type: 'uint16', name: 'choiceId', internalType: 'uint16' },
+              { type: 'string', name: 'choiceName', internalType: 'string' },
+              { type: 'uint256', name: 'totalBetsAmount', internalType: 'uint256' },
+              { type: 'uint256', name: 'currentMultiplier', internalType: 'uint256' },
+            ],
+          },
+        ],
+      },
+    ],
+    name: 'getSportEventsBySport',
+    inputs: [{ type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [
+      {
+        type: 'tuple[]',
+        name: '',
+        internalType: 'struct OIBetShowcase.SportEvent[]',
+        components: [
+          { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
+          { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'uint256', name: 'startTime', internalType: 'uint256' },
+          { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
+          { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
+          { type: 'uint16', name: 'winner', internalType: 'uint16' },
+          { type: 'uint8', name: 'gender', internalType: 'uint8' },
+          { type: 'bool', name: 'cancelled', internalType: 'bool' },
+          {
+            type: 'tuple[]',
+            name: 'choices',
+            internalType: 'struct OIBetShowcase.Choices[]',
+            components: [
+              { type: 'uint16', name: 'choiceId', internalType: 'uint16' },
+              { type: 'string', name: 'choiceName', internalType: 'string' },
+              { type: 'uint256', name: 'totalBetsAmount', internalType: 'uint256' },
+              { type: 'uint256', name: 'currentMultiplier', internalType: 'uint256' },
+            ],
+          },
+        ],
+      },
+    ],
+    name: 'getSportEventsBySportFromTo',
+    inputs: [
+      { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
+      { type: 'uint256', name: 'from', internalType: 'uint256' },
+      { type: 'uint256', name: 'to', internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'bool', name: '', internalType: 'bool' }],
+    name: 'isProduction',
+    inputs: [],
   },
   {
     type: 'function',
@@ -613,6 +705,16 @@ export const betAbi = [
     type: 'function',
     stateMutability: 'nonpayable',
     outputs: [],
+    name: 'setAuthorizedAddress',
+    inputs: [
+      { type: 'address', name: 'addr', internalType: 'address' },
+      { type: 'bool', name: 'isAuthorized', internalType: 'bool' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
     name: 'setWinner',
     inputs: [
       { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
@@ -630,6 +732,7 @@ export const betAbi = [
       { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
       { type: 'uint16', name: 'winner', internalType: 'uint16' },
       { type: 'uint8', name: 'gender', internalType: 'uint8' },
+      { type: 'bool', name: 'cancelled', internalType: 'bool' },
     ],
     name: 'sportEvents',
     inputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
@@ -647,6 +750,23 @@ export const betAbi = [
   },
   {
     type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'bytes32', name: '', internalType: 'bytes32' }],
+    name: 'sportEventsBySport',
+    inputs: [
+      { type: 'uint8', name: '', internalType: 'enum OIBetShowcase.Sports' },
+      { type: 'uint256', name: '', internalType: 'uint256' },
+    ],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
+    name: 'sportEventsBySportLength',
+    inputs: [{ type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' }],
+  },
+  {
+    type: 'function',
     stateMutability: 'nonpayable',
     outputs: [],
     name: 'transferOwnership',
@@ -658,5 +778,12 @@ export const betAbi = [
     outputs: [{ type: 'address', name: '', internalType: 'contract IMatchResultVerification' }],
     name: 'verification',
     inputs: [],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    outputs: [],
+    name: 'withdraw',
+    inputs: [{ type: 'uint256', name: 'amount', internalType: 'uint256' }],
   },
 ];

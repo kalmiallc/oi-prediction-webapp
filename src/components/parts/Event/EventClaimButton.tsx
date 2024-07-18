@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 export default function EventClaimButton({
   event,
   choice,
-}: { event: SportEvent; choice: number } & ComponentProps) {
+}: { event: SportEvent; choice?: Choice } & ComponentProps) {
   const { address } = useAccount();
   const router = useRouter();
   const {
@@ -22,11 +22,13 @@ export default function EventClaimButton({
 
   useEffect(() => {
     if (address && bets?.[address]?.length) {
-      console.log({ bets, event });
       setHasBets(
         bets?.[address]?.some(
           bet =>
-            bet.eventUID === event.uid && bet.betChoice === choice && bet.event.winner === choice
+            bet.eventUID === event.uid &&
+            (!choice ||
+              (bet.betChoice === choice.choiceIndex && bet.event.winner === choice.choiceId)) &&
+            !bet.claimed
         )
       );
     }
@@ -38,7 +40,7 @@ export default function EventClaimButton({
   return (
     <div className="">
       <Button variant="contained" className="w-full px-10 mt-2 capitalize" onClick={onConfirm}>
-        Claim
+        {choice ? 'Claim' : 'Refund'}
       </Button>
     </div>
   );

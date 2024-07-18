@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
@@ -7,12 +7,20 @@ export default function EventBetConfirmModal({
   event,
   data,
   onClose,
+  onConfirm,
 }: {
   event: SportEvent;
   data: { choice: number; amount: number } | null;
   onClose: () => void;
+  onConfirm: () => void;
 } & ComponentProps) {
-  const { placeBet, isPending } = useContract();
+  const { placeBet, isPending, transactionConfirm } = useContract();
+
+  useEffect(() => {
+    if (transactionConfirm) {
+      onConfirm();
+    }
+  }, [transactionConfirm]);
 
   async function onBet() {
     try {

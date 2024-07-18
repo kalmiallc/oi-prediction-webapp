@@ -18,7 +18,8 @@ export default function EventBetMultiplier({
     abi: betAbi,
     address: getContractAddressForEnv(process.env.NODE_ENV),
     functionName: 'calculateAproximateBetReturn',
-    args: [parseEther(amount.toString()), choice, event],
+    args: [parseEther(amount.toString()).toString(), choice, event],
+    query: { staleTime: 1 * 60 * 1000, enabled: !!amount },
   });
 
   async function getNewMutli() {

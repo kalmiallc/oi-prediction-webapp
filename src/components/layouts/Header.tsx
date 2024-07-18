@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Button } from '@mui/material';
 import Icon from '@mdi/react';
 import { mdiMenu } from '@mdi/js';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Header() {
   return (
@@ -35,7 +36,7 @@ export default function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-1 xl:gap-2">
-          <w3m-button label="Connect" />
+          <ConnectButton />
         </div>
       </div>
     </>
