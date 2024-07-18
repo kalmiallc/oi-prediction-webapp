@@ -2,35 +2,42 @@ import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
 import { getContractAddressForEnv } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
-import { useGlobalContext } from '@/contexts/global';
 import { useParams } from 'next/navigation';
 import { CircularProgress, TextField } from '@mui/material';
 import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 import useDebounce from '@/hooks/useDebounce';
 import DatePicker from '@/components/inputs/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function SportPage() {
   const params = useParams<{ sport: string }>();
-  const { state, dispatch } = useGlobalContext();
+  const { reloadBets } = useGlobalContext();
 
   const [sport, setSport] = useState<Sports | undefined>(sportByLink?.[params?.sport] || undefined);
 
   const [sportEvents, setSportEvents] = useState([] as SportEvent[]);
   const [search, setSearch] = useState('');
-  const [date, setDate] = useState<Dayjs | null>(
-    state.timestamp ? dayjs(state.timestamp * 1000) : dayjs()
-  );
+  const [date, setDate] = useState<Dayjs | null>(null);
+  const [timestamp, setTimestamp] = useState<number | null>(null);
   const { debounce } = useDebounce();
 
-  const { data, refetch, isLoading } = useReadContract({
+  const filteredBets = useMemo(() => {
+    return sportEvents.filter(
+      x =>
+        (!timestamp || Number(x.startTime) >= timestamp) &&
+        x.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [sportEvents, timestamp, search]);
+
+  const { data, isLoading, refetch } = useReadContract({
     abi: betAbi,
     address: getContractAddressForEnv(process.env.NODE_ENV),
-    functionName: 'getSportEventsByDateAndSport',
-    args: [state.timestamp, sport],
+    functionName: 'getSportEventsBySport',
+    args: [sport],
     query: { staleTime: 1 * 60 * 1000 },
   });
 
@@ -60,13 +67,14 @@ export default function SportPage() {
   }, [search, data]);
 
   useEffect(() => {
-    if (date && sport != null) {
+    if (date) {
       const timestamp = date.endOf('d').unix();
       const startOfDay = Math.floor(timestamp - (timestamp % 86400));
-      dispatch({ type: 'setTimestamp', payload: startOfDay });
-      refetch();
+      setTimestamp(startOfDay);
+    } else {
+      setTimestamp(null);
     }
-  }, [date, sport]);
+  }, [date]);
 
   useEffect(() => {
     if (Array.isArray(data) && data?.length) {
@@ -75,6 +83,11 @@ export default function SportPage() {
       setSportEvents([]);
     }
   }, [data]);
+
+  function onBet() {
+    refetch();
+    reloadBets();
+  }
 
   return (
     <div className="md:px-24 md:max-w-[1200px] m-auto">
@@ -90,12 +103,17 @@ export default function SportPage() {
                 InputProps={{ endAdornment: <Icon path={mdiMagnify} size={1} /> }}
                 onChange={e => setSearch(e.target.value)}
               />
-              <DatePicker value={date} className="max-w-[150px]" onChange={e => setDate(e)} />
+              <DatePicker
+                clearable
+                value={date}
+                className="max-w-[180px]"
+                onChange={e => setDate(e)}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-10 items-center">
-            {!!sportEvents?.length ? (
-              sportEvents.map((event, i) => <EventCard event={event} key={i} />)
+            {!!filteredBets?.length ? (
+              filteredBets.map((event, i) => <EventCard event={event} key={i} onBet={onBet} />)
             ) : isLoading ? (
               <CircularProgress size={40} className="" />
             ) : (

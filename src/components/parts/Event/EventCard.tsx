@@ -8,26 +8,32 @@ import { formatEther } from 'viem';
 import EventClaimButton from './EventClaimButton';
 dayjs.extend(relativeTime);
 
-export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
+export default function EventCard({
+  className,
+  event,
+  onBet: onBetConfirm,
+}: { event: SportEvent; onBet: () => void } & ComponentProps) {
   const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
-  const [choices, setChoices] = useState(
-    event.choices?.sort((a, b) => {
-      const orders = {
-        [1]: 0,
-        [2]: 2,
-        [3]: 1,
-      };
-      return orders[a.choiceId] - orders[b.choiceId];
-    })
-  );
-  const hasDraw = choices.length > 2;
+  const [choices, setChoices] = useState([] as (Choice & { fake: boolean })[]);
 
   function onBet(amount: number, choiceIndex: number) {
     setBetData({ amount, choice: choiceIndex });
   }
   useEffect(() => {
+    const chs = event.choices.map(x => ({ ...x, fake: false }));
+    // insert fake draw choice if no draw
+    if (chs.length === 2) {
+      chs.splice(1, 0, {
+        choiceId: 3,
+        choiceName: 'vs',
+        choiceIndex: 3,
+        totalBetsAmount: 0n,
+        currentMultiplier: 0n,
+        fake: true,
+      });
+    }
     setChoices(
-      event.choices?.sort((a, b) => {
+      chs?.sort((a, b) => {
         const orders = {
           [1]: 0,
           [2]: 2,
@@ -68,38 +74,42 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
           ])}
         >
           {choices.map((choice, i) => (
-            <>
-              <div className="w-full flex flex-col items-center" key={event.uid + '-' + i}>
-                <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
-                  {choice.choiceId === 3 ? 'vs' : choice.choiceName}
-                </h3>
-                {event.winner === 0 ? (
+            <div className="w-full flex flex-col items-center" key={event.uid + '-' + i}>
+              <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
+                {choice.choiceId === 3 ? 'vs' : choice.choiceName}
+              </h3>
+              {event.cancelled ? (
+                choice.choiceId === 3 && (
+                  <div className="text-center text-gray pb-10">
+                    <div>Match Cancelled!</div>
+                    <EventClaimButton event={event} />
+                  </div>
+                )
+              ) : event.winner === 0 ? (
+                !choice.fake && (
                   <EventBetInput
                     event={event}
                     choice={choice}
                     onBet={x => onBet(x, choice.choiceIndex as number)}
                   />
-                ) : (
-                  <div className="text-center text-gray pb-10">
-                    {event.winner === choice.choiceId && (
-                      <div>{choice.choiceId === 3 ? 'Draw!' : 'Winner!'}</div>
-                    )}
-                    <EventClaimButton event={event} choice={choice.choiceId} />
-                  </div>
-                )}
-              </div>
-              {!hasDraw && i === 0 && (
-                <div
-                  key={event.uid + '- vs'}
-                  className={classNames(['font-bold text-[22px] text-center mb-6 hidden md:block'])}
-                >
-                  vs
+                )
+              ) : (
+                <div className="text-center text-gray pb-10">
+                  {event.winner === choice.choiceId && (
+                    <div>{choice.choiceId === 3 ? 'Draw!' : 'Winner!'}</div>
+                  )}
+                  <EventClaimButton event={event} choice={choice} />
                 </div>
               )}
-            </>
+            </div>
           ))}
         </div>
-        <EventBetConfirmModal event={event} data={betData} onClose={() => setBetData(null)} />
+        <EventBetConfirmModal
+          event={event}
+          data={betData}
+          onClose={() => setBetData(null)}
+          onConfirm={onBetConfirm}
+        />
       </div>
     </div>
   );

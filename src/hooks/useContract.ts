@@ -9,8 +9,10 @@ export default function useContract() {
   const { data: hash, writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
+
   const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
+    query: { enabled: !!hash },
   });
 
   async function check() {
@@ -41,14 +43,13 @@ export default function useContract() {
     }
 
     const value = parseEther(amount.toString());
-    const tx = await writeContractAsync({
+    await writeContractAsync({
       abi: betAbi,
       address: contractAddress,
       functionName: 'placeBet',
       args: [betUuid, choiceId],
       value,
     });
-    tx;
   }
 
   async function claimBet(betId: bigint) {
@@ -65,9 +66,24 @@ export default function useContract() {
     });
   }
 
+  async function refundBet(betId: bigint) {
+    await check();
+    if (!contractAddress) {
+      return;
+    }
+
+    await writeContractAsync({
+      abi: betAbi,
+      address: contractAddress,
+      functionName: 'refund',
+      args: [betId],
+    });
+  }
+
   return {
     placeBet,
     claimBet,
+    refundBet,
     isPending: isPending || isPendingChain,
     transactionConfirm: isConfirmed,
   };
