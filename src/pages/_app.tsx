@@ -1,16 +1,16 @@
 import '@/assets/main.css';
+import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import BaseLayout from '@/components/layouts/BaseLayout';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { WagmiProvider } from 'wagmi';
-import { defaultWagmiConfig } from '@web3modal/wagmi';
 import { songbirdTestnet, songbird } from 'viem/chains';
-import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Roboto } from 'next/font/google';
 import { GlobalProvider } from '@/contexts/global';
 import Head from 'next/head';
+import { RainbowKitProvider, getDefaultConfig, lightTheme } from '@rainbow-me/rainbowkit';
 
 const fontRoboto = Roboto({
   weight: ['400', '700'],
@@ -26,19 +26,6 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 // TODO: change prod to songbird process.env.NODE_ENV === 'production' ? songbird : songbirdTestnet
 const chains = [songbirdTestnet] as const;
 
-const metadataW = {
-  name: 'Flare Bet',
-  description: 'Flare Bet App',
-  url: 'https://web3modal.com', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-};
-
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata: metadataW,
-});
-
 const theme = createTheme({
   typography: {
     fontFamily: fontRoboto.style.fontFamily,
@@ -53,18 +40,11 @@ const theme = createTheme({
   },
 });
 
-createWeb3Modal({
-  wagmiConfig,
+const wagmiConfig = getDefaultConfig({
+  appName: 'Flare Bet App',
+  appIcon: '/images/favicon-32x32.png',
   projectId,
-  enableOnramp: false,
-  enableAnalytics: false,
-  themeVariables: {
-    '--w3m-font-family': 'Roboto, sans-serif',
-    '--w3m-accent': '#D9205A',
-    '--w3m-color-mix': '#FFECF2',
-    '--w3m-color-mix-strength': 50,
-  },
-  themeMode: 'light',
+  chains,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -85,14 +65,21 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          <GlobalProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
-            <ThemeProvider theme={theme}>
-              <BaseLayout className="font-sans">
-                <Component {...pageProps} />
-              </BaseLayout>
-            </ThemeProvider>
-          </GlobalProvider>
+          <RainbowKitProvider
+            modalSize="compact"
+            theme={lightTheme({
+              accentColor: '#D9205A',
+            })}
+          >
+            <GlobalProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <ThemeProvider theme={theme}>
+                <BaseLayout className="font-sans">
+                  <Component {...pageProps} />
+                </BaseLayout>
+              </ThemeProvider>
+            </GlobalProvider>
+          </RainbowKitProvider>
         </WagmiProvider>
       </QueryClientProvider>
     </>

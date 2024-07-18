@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Flare Olympics Bet showcase
+
+Flare Olympics Bet showcase is a simple sports betting application centered around the Olympics, enabling users to view and place bets on various Olympic team sports. This decentralized application (dApp) features a frontend that directly interacts with a smart contract, ensuring all betting data is securely provided by the smart contract.
+
+## Key Features
+
+- **Full dApp Integration**: The application seamlessly integrates with smart contracts, providing a decentralized betting experience. All interactions are handled via smart contract.
+- **Flare Data Connector**: The main focus of this showcase is to demonstrate the capabilities of the Flare Data Connector. Data Connector allows applications to securely use data from external blockchains and the internet, supporting multi-chain, cross-chain, or Web2-connected applications. The 
+- **Data Connector usage**: This application leverages the Flare Data Connector to fetch Olympic match results from Web2 sources and relay them to the blockchain. The data is verified by Flare's attestation providers. Results from various online sources are aggregated and processed with the help of OpenAI. The verified data is then used by Flare attestation providers to supply accurate information to the Flare network.
+
+The showcase is compatible with both the Coston and Songbird networks.
+
+By harnessing the power of the Flare Data Connector, Flare Olympics Bet exemplifies how decentralized applications can utilize external data to deliver a seamless and trustworthy user experience to Web3.
+
+## Features
+
+- **My Bets**: View your placed bets.
+- **Sports Categories**: Place bets on pre-defined team sports
+- **All Bets**: Explore all bets which were placed.
+
+## Other components
+
+For a complete setup, the following components need to be running:
+
+- Betting smart contract
+- Backend application that calls the provider API for verification
+- Verification server
 
 ## Getting Started
 
-First, run the development server:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js
+- npm (Node Package Manager)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Installing
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/flare-bet.git
+    ```
+2. **Navigate to the project directory**:
+    ```bash
+    cd flare-bet
+    ```
+3. **Install dependencies**:
+    ```bash
+    npm install
+    ```
+4. **Start the development server**:
+    ```bash
+    npm start
+    ```
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+Once the development server is running, open your browser and navigate to `http://localhost:3000` to access the app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+To deploy the application, you can use platforms like Vercel, Netlify, or any other static site hosting service.
 
-## Deploy on Vercel
+1. **Build the project**:
+    ```bash
+    npm run build
+    ```
+2. **Deploy the contents of the `build` directory** to your preferred hosting service.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Built With
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [Node.js](https://nodejs.org/) - JavaScript runtime
+- [Vercel](https://vercel.com/) - Hosting service
+
+
+## Authors
+
+- **Borut Terpinc** - *Project lead, Technical lead* 
+- **Jackob Horgan** - *Project co-lead* 
+- **Mitja Kjuder** - *Blockchain development* 
+- **Anže Mur** - *Backend and AI development* 
+- **Bor Drnovšček** - *Frontend development* 
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+

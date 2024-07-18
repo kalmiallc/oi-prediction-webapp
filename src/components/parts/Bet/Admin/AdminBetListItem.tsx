@@ -22,7 +22,7 @@ export default function AdminBetListItem({
   return (
     <div
       className={classNames([
-        'grid grid-cols-[repeat(15,minmax(0,1fr))] items-center overflow-hidden',
+        'grid grid-cols-[repeat(15,minmax(0,1fr))] gap-1 items-center overflow-hidden',
         className,
       ])}
     >

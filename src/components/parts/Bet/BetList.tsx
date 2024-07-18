@@ -49,6 +49,7 @@ export default function BetList({
   const filteredBets = useMemo(() => {
     return timestamp ? bets.filter(x => getSod(Number(x.event.startTime)) === timestamp) : bets;
   }, [bets, timestamp]);
+
   return (
     <div className={classNames([className], 'bg-white rounded-[24px]', 'px-8 py-10')}>
       {!!address && !!filteredBets?.length ? (
@@ -70,6 +71,7 @@ export default function BetList({
                   bet={bet}
                   event={bet.event as SportEvent}
                   onClaim={() => onClaim(bet)}
+                  onRefund={() => onClaim(bet)}
                 />
               )
           )}

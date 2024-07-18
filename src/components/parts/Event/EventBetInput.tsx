@@ -34,7 +34,7 @@ export default function EventBetInput({
   const watchBet = watch('bet');
 
   useEffect(() => {
-    if (watchBet < maxAmount) {
+    if (watchBet <= maxAmount) {
       debounce(() => {
         setDebouncedBet(watchBet);
       }, 2000);
@@ -58,7 +58,10 @@ export default function EventBetInput({
                 value={value}
                 step={0.1}
                 className="!ring-primary flex-grow"
-                onChange={e => (onChange(Math.max(Number(e.target.value), 0)), trigger())}
+                onChange={e => (
+                  onChange(Math.max(Number(e.target.value), 0)),
+                  Number(e.target.value) !== 0 ? trigger() : {}
+                )}
               ></NumberInput>
             )}
           />

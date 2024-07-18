@@ -4,27 +4,27 @@ import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
 import { formatUnits } from 'viem';
 
-export default function BetClaimModal({
+export default function BetRefundModal({
   event,
   bet,
   open,
   onClose,
-  onClaim,
+  onRefund,
 }: {
   open: boolean;
   event: SportEvent;
   bet: Bet;
   onClose: () => void;
-  onClaim?: () => void;
+  onRefund?: () => void;
 } & ComponentProps) {
-  const { claimBet, isPending, transactionConfirm } = useContract();
+  const { refundBet, isPending, transactionConfirm } = useContract();
 
   async function onConfirm() {
     try {
       if (!bet?.id) {
         return;
       }
-      await claimBet(bet.id);
+      await refundBet(bet.id);
       onClose();
       toast.success('Bet winnings claimed');
     } catch (error: any) {
@@ -37,7 +37,7 @@ export default function BetClaimModal({
 
   useEffect(() => {
     if (transactionConfirm) {
-      onClaim?.();
+      onRefund?.();
     }
   }, [transactionConfirm]);
 
@@ -48,19 +48,17 @@ export default function BetClaimModal({
       onClose={() => onClose()}
       onConfirm={() => onConfirm()}
       isLoading={isPending}
-      title="Claim your winnings?"
+      title="Refund your bet?"
     >
-      <div className="text-gray ">
+      <div className="text-gray">
         <h2 className="mb-2 text-xl">{event.title}</h2>
         <p>
           {choice.choiceName}
           {choice.choiceName.toLowerCase() !== 'draw' ? ' to win' : ''}
         </p>
         <p>
-          Winnings:{' '}
-          <span className="font-bold">
-            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)} SGB
-          </span>
+          Amount:{' '}
+          <span className="font-bold">{(+formatUnits(bet.betAmount, 18)).toFixed(4)} SGB</span>
         </p>
       </div>
     </Modal>

@@ -16,8 +16,8 @@ function ContractTemplate(
 
 const Contract = ContractTemplate(
   betAbi,
-  '0xcec1147b494d47F33B27b2F553c37526a4D3f0bb', // prod
-  '0xcec1147b494d47F33B27b2F553c37526a4D3f0bb' // dev
+  '0xbACf59d58719DF9017414da1b7f7752e9648B777', // prod
+  '0xbACf59d58719DF9017414da1b7f7752e9648B777' // dev
 );
 export function getContractAddressForEnv(env = 'production') {
   if (env === 'development' && Contract.devAddress) {

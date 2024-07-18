@@ -70,7 +70,7 @@ function GlobalProvider({ children }: { children: ReactNode }) {
     ...contract,
     functionName: 'getEvents',
     args: [eventUids],
-    query: { staleTime: 5 * 60 * 1000 },
+    query: { staleTime: 5 * 60 * 1000, enabled: !!eventUids.length },
   });
 
   useEffect(() => {
@@ -91,7 +91,6 @@ function GlobalProvider({ children }: { children: ReactNode }) {
         ...bet,
         event: eventData.find(event => event.uid == bet.eventUID),
       }));
-      console.log(betsWithEvents);
       dispatch({
         type: 'setBets',
         payload: { address, bets: betsWithEvents },

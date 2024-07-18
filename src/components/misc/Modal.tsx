@@ -20,7 +20,7 @@ export default function Modal({
     <Dialog open={isOpen} onClose={() => onClose?.()} className={className}>
       <div className="p-2.5 min-w-[min(300px,80vw)] ">
         <div className="px-4 pt-2 text-center">
-          <h1 className="mb-4 font-bold">{title}</h1>
+          <h1 className="mb-2 font-bold">{title}</h1>
           {children}
         </div>
         <div className="flex mt-4 gap-2.5">

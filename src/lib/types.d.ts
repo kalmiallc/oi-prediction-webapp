@@ -23,6 +23,7 @@ interface SportEvent {
   poolAmount: bigint;
   winner: Winner;
   choices: Choice[];
+  cancelled: boolean;
 }
 
 type Choice = {
