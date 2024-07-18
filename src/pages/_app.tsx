@@ -27,7 +27,7 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 const chains = [songbirdTestnet] as const;
 
 const metadataW = {
-  name: 'Flare Bet',
+  name: 'Flare Bet Olympics - a showcase',
   description: 'Flare Bet App',
   url: 'https://web3modal.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
