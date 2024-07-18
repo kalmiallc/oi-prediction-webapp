@@ -62,3 +62,4 @@ More developer oriented documentation can be found [here](https://github.com/fla
 Flare Olympics Bet is compatible with both the Coston and Songbird networks, showcasing its flexibility and interoperability.
 
 By utilizing the Flare Data Connector, Flare Olympics Bet demonstrates how decentralized applications can effectively use external data to provide a seamless and trustworthy betting experience on the blockchain.
+
