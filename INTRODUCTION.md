@@ -15,7 +15,6 @@ This showcase was developed in cooperation with:
 
 Flare Olympics Bet Showcase is a decentralized sports betting application designed specifically for the Olympics. Users can place bets on various team sports events with simple outcomes: win, lose, or draw. This open-source project showcases the powerful capabilities of Flare's advanced features, ensuring that sports results are directly reflected on the blockchain for secure and transparent betting.
 
-
 ## Key Features
 
 - **User-Friendly Interface**: The frontend is designed for ease of use, allowing you to deposit funds, place bets, and withdraw winnings efficiently using your wallet credentials.
