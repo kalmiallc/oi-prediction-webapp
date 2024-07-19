@@ -8,6 +8,7 @@ import { formatEther } from 'viem';
 import EventClaimButton from './EventClaimButton';
 import useToken from '@/hooks/useToken';
 import { songbird } from 'viem/chains';
+import { Tooltip } from '@mui/material';
 dayjs.extend(relativeTime);
 
 export default function EventCard({
@@ -45,6 +46,12 @@ export default function EventCard({
       })
     );
   }, [event.choices]);
+
+  const hasStarted = dayjs(Number(event.startTime) * 1000).isBefore(dayjs());
+
+  if (!choices.length) {
+    return <></>;
+  }
   return (
     <div className="relative mt-10 w-full">
       <div
@@ -66,9 +73,24 @@ export default function EventCard({
           'relative w-full bg-white shadow-[0_4px_4px_0] shadow-black/25',
         ])}
       >
-        <div className="text-xs text-center">
-          Starts {dayjs(Number(event.startTime) * 1000).fromNow()}
-        </div>
+        <Tooltip
+          title={dayjs(Number(event.startTime) * 1000).format('MM/DD/YYYY HH:mm')}
+          placement="top"
+          PopperProps={{
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
+          }}
+        >
+          <div className="text-xs text-center">
+            {hasStarted ? 'Started' : 'Starts'} {dayjs(Number(event.startTime) * 1000).fromNow()}
+          </div>
+        </Tooltip>
         <div
           className={classNames([
             'grid gap-5 justify-items-center grid-cols-1 px-10 mt-4',
@@ -77,7 +99,7 @@ export default function EventCard({
         >
           {choices.map((choice, i) => (
             <div className="w-full flex flex-col items-center" key={event.uid + '-' + i}>
-              <h3 className={classNames(['font-bold text-[22px] text-center mb-6'])}>
+              <h3 className={classNames(['typo-h2 text-center mb-6'])}>
                 {choice.choiceId === 3 ? 'vs' : choice.choiceName}
               </h3>
               {event.cancelled ? (
@@ -87,7 +109,7 @@ export default function EventCard({
                     <EventClaimButton event={event} />
                   </div>
                 )
-              ) : event.winner === 0 ? (
+              ) : event.winner === 0 && !hasStarted ? (
                 !choice.fake && (
                   <EventBetInput
                     event={event}

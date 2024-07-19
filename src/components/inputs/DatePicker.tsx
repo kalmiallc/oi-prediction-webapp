@@ -10,13 +10,19 @@ export default function DatePicker({
   value,
   onChange,
   clearable = false,
-}: { clearable?: boolean; value?: any; onChange: (e: Dayjs | null) => void } & ComponentProps) {
+  label = 'Date',
+}: {
+  label?: string;
+  clearable?: boolean;
+  value?: any;
+  onChange: (e: Dayjs | null) => void;
+} & ComponentProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiDatePicker
         value={value}
         className={classNames([className])}
-        label="Date"
+        label={label}
         slotProps={{
           textField: { size: 'small' },
           field: { clearable: clearable },

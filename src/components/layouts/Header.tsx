@@ -22,7 +22,7 @@ export default function Header() {
           <Button className="lg:hidden">
             <Icon path={mdiMenu}></Icon>
           </Button>
-          <Link href={'/'} className="hidden md:block">
+          <Link href={'https://flare.network/'} target="_blank" className="hidden md:block">
             <Image src="/images/logo.png" alt="Flare Logo" height={35} width={101} />
           </Link>
           <Image

@@ -20,8 +20,9 @@ export default function BetsPage() {
   return (
     <div className="md:px-24 md:max-w-[1200px] m-auto">
       <div className="flex md:flex-nowrap flex-wrap justify-between mb-8 items-center gap-4">
-        <h1 className="text-black text-[32px] font-bold shrink-0">My bets</h1>
+        <h1 className="typo-h1 shrink-0">My bets</h1>
         <DatePicker
+          label="Event Date"
           clearable={true}
           value={date}
           className="max-w-[180px]"

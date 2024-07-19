@@ -14,17 +14,17 @@ export default function Sidebar() {
           'bg-white',
           'shadow-[0_0_4px_0] shadow-black/25',
           'hidden overflow-x-clip lg:flex py-6',
-          'min-w-[250px] min-h-[calc(100vh-100px)] h-full',
+          'min-w-[250px] max-h-[calc(100vh-100px)] min-h-[calc(100vh-100px)] h-full',
           'sticky top-[100px]',
-          'flex-col justify-between',
+          'flex-col justify-between overflow-auto',
         ])}
       >
         <div>
           <SidebarNav />
         </div>
-        <div>
-          <SidebarNavBtn href="/">How it works</SidebarNavBtn>
-          <Link href="https://kalmia.si/" target="_blank" className=" block pl-12 pt-10">
+        <div className="mt-8">
+          <SidebarNavBtn href="/about">How it works</SidebarNavBtn>
+          <Link href="https://kalmia.si/" target="_blank" className=" block pl-12 mt-8">
             <Image
               src="/images/kalmia-logo.png"
               alt="Olympics Logo"

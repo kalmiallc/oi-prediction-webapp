@@ -25,13 +25,13 @@ export default function SportPage() {
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const { debounce } = useDebounce();
 
-  const filteredBets = useMemo(() => {
-    return sportEvents.filter(
-      x =>
-        (!timestamp || Number(x.startTime) >= timestamp) &&
-        x.title.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [sportEvents, timestamp, search]);
+  // const filteredEvents = useMemo(() => {
+  //   return sportEvents.filter(
+  //     x =>
+  //       (!timestamp || Number(x.startTime) >= timestamp) &&
+  //       x.title.toLowerCase().includes(search.toLowerCase())
+  //   );
+  // }, [sportEvents, timestamp, search]);
 
   const { data, isLoading, refetch } = useReadContract({
     abi: betAbi,
@@ -42,10 +42,14 @@ export default function SportPage() {
   });
 
   function getMappedEvents() {
-    return (data as SportEvent[]).map((x: SportEvent) => ({
-      ...x,
-      choices: x.choices.map((c, i) => ({ ...c, choiceIndex: i })),
-    }));
+    return (data as SportEvent[])
+      .map((x: SportEvent) => ({
+        ...x,
+        choices: x.choices.map((c, i) => ({ ...c, choiceIndex: i })),
+      }))
+      .sort((a, b) => {
+        return Number(a.startTime) - Number(b.startTime);
+      });
   }
 
   useEffect(() => {
@@ -59,12 +63,16 @@ export default function SportPage() {
       debounce(
         () =>
           setSportEvents(
-            getMappedEvents().filter(x => x.title.toLowerCase().includes(search.toLowerCase()))
+            getMappedEvents().filter(
+              x =>
+                (!timestamp || Number(x.startTime) >= timestamp) &&
+                x.title.toLowerCase().includes(search.toLowerCase())
+            )
           ),
         500
       );
     }
-  }, [search, data]);
+  }, [search, data, timestamp]);
 
   useEffect(() => {
     if (date) {
@@ -94,7 +102,7 @@ export default function SportPage() {
       {sport != null && (
         <>
           <div className="flex md:flex-nowrap flex-wrap justify-between mb-8 items-center gap-4">
-            <h1 className="text-black text-[32px] font-bold shrink-0">{sportsNames[sport]}</h1>
+            <h1 className="typo-h1 shrink-0">{sportsNames[sport]}</h1>
             <div className="flex gap-4 md:justify-end justify-between w-full">
               <TextField
                 className="max-w-[250px]"
@@ -106,14 +114,15 @@ export default function SportPage() {
               <DatePicker
                 clearable
                 value={date}
+                label="Event Date"
                 className="max-w-[180px]"
                 onChange={e => setDate(e)}
               />
             </div>
           </div>
           <div className="flex flex-col gap-10 items-center">
-            {!!filteredBets?.length ? (
-              filteredBets.map((event, i) => <EventCard event={event} key={i} onBet={onBet} />)
+            {!!sportEvents?.length ? (
+              sportEvents.map((event, i) => <EventCard event={event} key={i} onBet={onBet} />)
             ) : isLoading ? (
               <CircularProgress size={40} className="" />
             ) : (
