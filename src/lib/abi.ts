@@ -205,6 +205,7 @@ export const betAbi = [
     name: 'createSportEvent',
     inputs: [
       { type: 'string', name: 'title', internalType: 'string' },
+      { type: 'string', name: 'teams', internalType: 'string' },
       { type: 'uint256', name: 'startTime', internalType: 'uint256' },
       { type: 'uint8', name: 'gender', internalType: 'uint8' },
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
@@ -497,6 +498,7 @@ export const betAbi = [
         components: [
           { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
           { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'string', name: 'teams', internalType: 'string' },
           { type: 'uint256', name: 'startTime', internalType: 'uint256' },
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
@@ -531,6 +533,7 @@ export const betAbi = [
         components: [
           { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
           { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'string', name: 'teams', internalType: 'string' },
           { type: 'uint256', name: 'startTime', internalType: 'uint256' },
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
@@ -565,6 +568,7 @@ export const betAbi = [
         components: [
           { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
           { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'string', name: 'teams', internalType: 'string' },
           { type: 'uint256', name: 'startTime', internalType: 'uint256' },
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
@@ -602,6 +606,7 @@ export const betAbi = [
         components: [
           { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
           { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'string', name: 'teams', internalType: 'string' },
           { type: 'uint256', name: 'startTime', internalType: 'uint256' },
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
@@ -636,6 +641,7 @@ export const betAbi = [
         components: [
           { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
           { type: 'string', name: 'title', internalType: 'string' },
+          { type: 'string', name: 'teams', internalType: 'string' },
           { type: 'uint256', name: 'startTime', internalType: 'uint256' },
           { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
           { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },
@@ -727,6 +733,7 @@ export const betAbi = [
     outputs: [
       { type: 'bytes32', name: 'uid', internalType: 'bytes32' },
       { type: 'string', name: 'title', internalType: 'string' },
+      { type: 'string', name: 'teams', internalType: 'string' },
       { type: 'uint256', name: 'startTime', internalType: 'uint256' },
       { type: 'uint8', name: 'sport', internalType: 'enum OIBetShowcase.Sports' },
       { type: 'uint256', name: 'poolAmount', internalType: 'uint256' },

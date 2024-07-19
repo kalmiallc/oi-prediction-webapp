@@ -6,6 +6,8 @@ import EventBetConfirmModal from './EventBetConfirmModal';
 import EventBetInput from './EventBetInput';
 import { formatEther } from 'viem';
 import EventClaimButton from './EventClaimButton';
+import useToken from '@/hooks/useToken';
+import { songbird } from 'viem/chains';
 dayjs.extend(relativeTime);
 
 export default function EventCard({
@@ -15,7 +17,7 @@ export default function EventCard({
 }: { event: SportEvent; onBet: () => void } & ComponentProps) {
   const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
   const [choices, setChoices] = useState([] as (Choice & { fake: boolean })[]);
-
+  const { token } = useToken();
   function onBet(amount: number, choiceIndex: number) {
     setBetData({ amount, choice: choiceIndex });
   }
@@ -54,7 +56,7 @@ export default function EventCard({
         ])}
       >
         <p>{event.title}</p>
-        <p>Pool total: {formatEther(event.poolAmount)} SGB</p>
+        <p>Pool total: {formatEther(event.poolAmount) + ' ' + token} </p>
       </div>
 
       <div

@@ -3,6 +3,7 @@ import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
 import { formatUnits } from 'viem';
+import useToken from '@/hooks/useToken';
 
 export default function BetClaimModal({
   event,
@@ -18,6 +19,7 @@ export default function BetClaimModal({
   onClaim?: () => void;
 } & ComponentProps) {
   const { claimBet, isPending, transactionConfirm } = useContract();
+  const { token } = useToken();
 
   async function onConfirm() {
     try {
@@ -59,7 +61,8 @@ export default function BetClaimModal({
         <p>
           Winnings:{' '}
           <span className="font-bold">
-            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)} SGB
+            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)}{' '}
+            {token}
           </span>
         </p>
       </div>
