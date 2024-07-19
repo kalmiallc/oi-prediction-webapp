@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import BetClaimModal from './BetClaimModal';
 import BetRefundModal from './BetRefundModal';
 import { useAccount, useBalance } from 'wagmi';
+import useToken from '@/hooks/useToken';
 
 dayjs.extend(relativeTime);
 
@@ -19,6 +20,7 @@ export default function BetListItem({
 }: { bet: Bet; event: SportEvent; onClaim?: () => void; onRefund?: () => void } & ComponentProps) {
   const [showClaim, setShowClaim] = useState<boolean>(false);
   const [showRefund, setShowRefund] = useState<boolean>(false);
+  const { token } = useToken();
 
   function parseBetAmount(amount: bigint) {
     return formatUnits(amount, 18);
@@ -55,7 +57,9 @@ export default function BetListItem({
         <div className="truncate">{event?.title}</div>
       </Tooltip>
       <div>{choice?.choiceName}</div>
-      <div>{Number(parseBetAmount(bet.betAmount)).toFixed(1)} SGB</div>
+      <div>
+        {Number(parseBetAmount(bet.betAmount)).toFixed(1)} {token}
+      </div>
       <div>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</div>
       <div>
         {event &&
@@ -72,8 +76,9 @@ export default function BetListItem({
             ? 'Pending'
             : hasWon
               ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) +
-                ' SGB'
-              : '0 SGB'}
+                ' ' +
+                { token }
+              : '0 ' + { token }}
       </div>
       {(pending || hasWon) && (
         <div className="text-center">

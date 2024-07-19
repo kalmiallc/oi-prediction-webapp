@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
+import useToken from '@/hooks/useToken';
 
 export default function EventBetConfirmModal({
   event,
@@ -15,6 +16,7 @@ export default function EventBetConfirmModal({
   onConfirm: () => void;
 } & ComponentProps) {
   const { placeBet, isPending, transactionConfirm } = useContract();
+  const { token } = useToken();
 
   useEffect(() => {
     if (transactionConfirm) {
@@ -57,7 +59,9 @@ export default function EventBetConfirmModal({
         <p>
           {choice}
           {choice.toLowerCase() !== 'draw' ? ' to win: ' : ': '}
-          <span className="font-bold">{data.amount} SGB</span>
+          <span className="font-bold">
+            {data.amount} {token}
+          </span>
         </p>
       </div>
     </Modal>

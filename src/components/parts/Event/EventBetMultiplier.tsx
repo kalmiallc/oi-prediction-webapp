@@ -4,6 +4,7 @@ import { betAbi } from '@/lib/abi';
 import { getContractAddressForEnv } from '@/lib/contracts';
 import classNames from 'classnames';
 import { formatEther, parseEther } from 'viem';
+import useToken from '@/hooks/useToken';
 
 export default function EventBetMultiplier({
   className,
@@ -14,6 +15,7 @@ export default function EventBetMultiplier({
 }: { event: string; choice: number; initial: number; amount: number } & ComponentProps) {
   const [newMulti, setNewMulti] = useState(0);
   const [newReturn, setNewReturn] = useState(initial * amount);
+  const { token } = useToken();
   const { data: aproxReturn, refetch } = useReadContract({
     abi: betAbi,
     address: getContractAddressForEnv(process.env.NODE_ENV),
@@ -50,7 +52,7 @@ export default function EventBetMultiplier({
         <span className="text-black font-bold">x{(newMulti || initial).toFixed(2)}</span>
       </div>
       <div>
-        Potential SGB Returns:{' '}
+        Potential {token} Returns:{' '}
         <span className="text-black font-bold">{(newReturn || initial * amount).toFixed(2)}</span>
       </div>
     </div>

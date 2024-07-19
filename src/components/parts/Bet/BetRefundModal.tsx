@@ -3,6 +3,7 @@ import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
 import { formatUnits } from 'viem';
+import useToken from '@/hooks/useToken';
 
 export default function BetRefundModal({
   event,
@@ -18,6 +19,7 @@ export default function BetRefundModal({
   onRefund?: () => void;
 } & ComponentProps) {
   const { refundBet, isPending, transactionConfirm } = useContract();
+  const { token } = useToken();
 
   async function onConfirm() {
     try {
@@ -58,7 +60,9 @@ export default function BetRefundModal({
         </p>
         <p>
           Amount:{' '}
-          <span className="font-bold">{(+formatUnits(bet.betAmount, 18)).toFixed(4)} SGB</span>
+          <span className="font-bold">
+            {(+formatUnits(bet.betAmount, 18)).toFixed(4)} {token}
+          </span>
         </p>
       </div>
     </Modal>
