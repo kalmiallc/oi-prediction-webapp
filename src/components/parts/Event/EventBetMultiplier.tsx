@@ -16,7 +16,11 @@ export default function EventBetMultiplier({
   const [newMulti, setNewMulti] = useState(0);
   const [newReturn, setNewReturn] = useState(initial * amount);
   const { token } = useToken();
-  const { data: aproxReturn, refetch } = useReadContract({
+  const {
+    data: aproxReturn,
+    refetch,
+    isLoading,
+  } = useReadContract({
     abi: betAbi,
     address: getContractAddressForEnv(process.env.NODE_ENV),
     functionName: 'calculateAproximateBetReturn',
@@ -49,11 +53,15 @@ export default function EventBetMultiplier({
     <div className={classNames(['text-xs text-gray items-center', className])}>
       <div className="mb-1">
         Multiplier:{' '}
-        <span className="text-black font-bold">x{(newMulti || initial).toFixed(2)}</span>
+        <span className="text-black font-bold">
+          x{(newMulti || isLoading ? newMulti : initial).toFixed(2)}
+        </span>
       </div>
       <div>
         Potential {token} Returns:{' '}
-        <span className="text-black font-bold">{(newReturn || initial * amount).toFixed(2)}</span>
+        <span className="text-black font-bold">
+          {(newReturn || isLoading ? newReturn : initial * amount).toFixed(2)}
+        </span>
       </div>
     </div>
   );

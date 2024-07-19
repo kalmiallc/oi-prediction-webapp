@@ -74,7 +74,9 @@ export default function EventCard({
         ])}
       >
         <Tooltip
-          title={dayjs(Number(event.startTime) * 1000).format('MM/DD/YYYY HH:mm')}
+          title={
+            hasStarted ? 'Started ' : 'Starts ' + dayjs(Number(event.startTime) * 1000).fromNow()
+          }
           placement="top"
           PopperProps={{
             modifiers: [
@@ -88,7 +90,7 @@ export default function EventCard({
           }}
         >
           <div className="text-xs text-center">
-            {hasStarted ? 'Started' : 'Starts'} {dayjs(Number(event.startTime) * 1000).fromNow()}
+            {dayjs(Number(event.startTime) * 1000).format('MM/DD/YYYY HH:mm')}
           </div>
         </Tooltip>
         <div

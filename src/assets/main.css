@@ -84,3 +84,13 @@ body * {
 .MuiDialog-paper {
   border-radius: 10px;
 }
+
+.MuiTableCell-root {
+  padding: 12px;
+}
+
+.MuiTableHead-root {
+  .MuiTableCell-root {
+    font-weight: bold;
+  }
+}

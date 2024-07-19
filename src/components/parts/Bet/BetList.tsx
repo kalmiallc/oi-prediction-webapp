@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
-import { CircularProgress, Divider, Stack } from '@mui/material';
-import BetListItem from './BetListItem';
+import { CircularProgress, TableContainer } from '@mui/material';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import BetListTable from './BetListTable';
 
 export default function BetList({
   className,
@@ -51,38 +51,16 @@ export default function BetList({
   }, [bets, timestamp]);
 
   return (
-    <div className={classNames([className], 'bg-white rounded-[24px]', 'px-8 py-10')}>
-      {!!address && !!filteredBets?.length ? (
-        <Stack gap={1} divider={<Divider flexItem className="text-gray" />}>
-          <div className="grid grid-cols-7 font-bold">
-            <div>Match</div>
-            <div>Bet</div>
-            <div>Amount</div>
-            <div>Multiplier</div>
-            <div>Result</div>
-            <div>Winnings</div>
-            <div></div>
-          </div>
-          {filteredBets.map(
-            bet =>
-              !!bet.event && (
-                <BetListItem
-                  key={bet.id}
-                  bet={bet}
-                  event={bet.event as SportEvent}
-                  onClaim={() => onClaim(bet)}
-                  onRefund={() => onClaim(bet)}
-                />
-              )
-          )}
-        </Stack>
-      ) : isLoading ? (
-        <div className="text-center">
+    <TableContainer className={classNames([className], 'bg-white rounded-[24px]', 'p-2')}>
+      {isLoading ? (
+        <div className="text-center p-10">
           <CircularProgress size={40} />
         </div>
+      ) : !!address && !!filteredBets.length ? (
+        <BetListTable bets={filteredBets} onClaim={onClaim} />
       ) : (
-        <div>{timestamp ? 'No bets placed for this day' : 'No bets placed'}</div>
+        <div className="p-10">{timestamp ? 'No bets placed for this day' : 'No bets placed'}</div>
       )}
-    </div>
+    </TableContainer>
   );
 }

@@ -10,7 +10,7 @@ import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 import useDebounce from '@/hooks/useDebounce';
 import DatePicker from '@/components/inputs/DatePicker';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useGlobalContext } from '@/contexts/global';
 
 export default function SportPage() {
@@ -41,12 +41,23 @@ export default function SportPage() {
     query: { staleTime: 1 * 60 * 1000 },
   });
 
+  function getSod(time: number) {
+    const timestamp = dayjs(time * 1000)
+      .endOf('d')
+      .unix();
+    return Math.floor(timestamp - (timestamp % 86400));
+  }
   function getMappedEvents() {
     return (data as SportEvent[])
       .map((x: SportEvent) => ({
         ...x,
         choices: x.choices.map((c, i) => ({ ...c, choiceIndex: i })),
       }))
+      .filter(
+        x =>
+          (!timestamp || getSod(Number(x.startTime)) === timestamp) &&
+          x.title.toLowerCase().includes(search.toLowerCase())
+      )
       .sort((a, b) => {
         return Number(a.startTime) - Number(b.startTime);
       });
@@ -59,26 +70,19 @@ export default function SportPage() {
   }, [params]);
 
   useEffect(() => {
+    setSportEvents(getMappedEvents());
+  }, [timestamp]);
+
+  useEffect(() => {
     if (data) {
-      debounce(
-        () =>
-          setSportEvents(
-            getMappedEvents().filter(
-              x =>
-                (!timestamp || Number(x.startTime) >= timestamp) &&
-                x.title.toLowerCase().includes(search.toLowerCase())
-            )
-          ),
-        500
-      );
+      debounce(() => setSportEvents(getMappedEvents()), 500);
     }
-  }, [search, data, timestamp]);
+  }, [search, data]);
 
   useEffect(() => {
     if (date) {
       const timestamp = date.endOf('d').unix();
-      const startOfDay = Math.floor(timestamp - (timestamp % 86400));
-      setTimestamp(startOfDay);
+      setTimestamp(getSod(timestamp));
     } else {
       setTimestamp(null);
     }

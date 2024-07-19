@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { formatUnits } from 'viem';
-import { Button, Tooltip } from '@mui/material';
+import { Button, TableCell, TableRow, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import classNames from 'classnames';
 import BetClaimModal from './BetClaimModal';
 import BetRefundModal from './BetRefundModal';
-import { useAccount, useBalance } from 'wagmi';
 import useToken from '@/hooks/useToken';
 
 dayjs.extend(relativeTime);
 
 export default function BetListItem({
-  className,
   bet,
   event,
   onClaim,
@@ -39,7 +36,7 @@ export default function BetListItem({
   const pending = event?.winner === 0;
   const cancelled = event?.cancelled;
   return (
-    <div className={classNames(['grid grid-cols-7 gap-1 items-center min-h-[35px]', className])}>
+    <TableRow>
       <Tooltip
         title={event?.title}
         placement="top"
@@ -54,22 +51,22 @@ export default function BetListItem({
           ],
         }}
       >
-        <div className="truncate">{event?.title}</div>
+        <TableCell className="truncate">{event?.title}</TableCell>
       </Tooltip>
-      <div>{choice?.choiceName}</div>
-      <div>
+      <TableCell>{choice?.choiceName}</TableCell>
+      <TableCell>
         {Number(parseBetAmount(bet.betAmount)).toFixed(1)} {token}
-      </div>
-      <div>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</div>
-      <div>
+      </TableCell>
+      <TableCell>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</TableCell>
+      <TableCell>
         {event &&
           (cancelled
             ? 'Cancelled'
             : pending
               ? 'Pending'
               : event.choices.find(x => x.choiceId === event.winner)?.choiceName)}
-      </div>
-      <div>
+      </TableCell>
+      <TableCell>
         {cancelled
           ? 'Cancelled'
           : pending
@@ -77,12 +74,12 @@ export default function BetListItem({
             : hasWon
               ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) +
                 ' ' +
-                { token }
-              : '0 ' + { token }}
-      </div>
-      {(pending || hasWon) && (
-        <div className="text-center">
-          {cancelled ? (
+                token
+              : '0 ' + token}
+      </TableCell>
+      <TableCell className="text-center">
+        {pending || hasWon ? (
+          cancelled ? (
             bet.claimed ? (
               <p className="text-gray">Already Refunded</p>
             ) : (
@@ -107,9 +104,11 @@ export default function BetListItem({
             >
               Claim
             </Button>
-          )}
-        </div>
-      )}
+          )
+        ) : (
+          <div></div>
+        )}
+      </TableCell>
       <BetClaimModal
         open={showClaim}
         bet={bet}
@@ -124,6 +123,6 @@ export default function BetListItem({
         onClose={() => setShowRefund(false)}
         onRefund={onRefund}
       />
-    </div>
+    </TableRow>
   );
 }

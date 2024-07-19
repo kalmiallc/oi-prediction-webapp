@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
-import { CircularProgress, Divider, Stack } from '@mui/material';
+import {
+  CircularProgress,
+  Divider,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from '@mui/material';
 import classNames from 'classnames';
 import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
-import AdminBetListItem from './AdminBetListItem';
+import AdminBetListTable from './AdminBetListTable';
 
 export default function AdminBetList({ className }: ComponentProps) {
   const {
@@ -13,39 +24,78 @@ export default function AdminBetList({ className }: ComponentProps) {
   } = useGlobalContext();
   const [bets, setBets] = useState<Bet[]>([]);
   const [events, setEvents] = useState<SportEvent[]>([]);
+  const [betsHelper, setBetsHelper] = useState<{ [key: number]: Bet[] }>({});
   const [eventUids, setEventUids] = useState<string[]>([]);
+  const [pag, setPag] = useState<{ from: number; to: number }>({ from: 0, to: 0 });
+  const [isLoading, setLoading] = useState(true);
 
   const contract = {
     abi: betAbi,
     address: getContractAddressForEnv(process.env.NODE_ENV),
-    query: { staleTime: 5 * 60 * 1000 },
   };
-  const { data: betData, isLoading } = useReadContract({
+  const { data: betsLength } = useReadContract({
     ...contract,
-    functionName: 'getBetsByDate',
+    functionName: 'betsByEventStartDateLength',
     args: [timestamp],
+    query: { staleTime: 5 * 60 * 1000, enabled: !!timestamp },
   });
-  const { data: eventData, refetch } = useReadContract({
+  const { data: betData, isLoading: isLoadingBets } = useReadContract({
+    ...contract,
+    functionName: 'getBetsByDateFromTo',
+    args: [timestamp, pag.from, pag.to],
+    query: { staleTime: 5 * 60 * 1000, enabled: !!timestamp && !!pag.to },
+  });
+  const { data: eventData, isLoading: isLoadingEvents } = useReadContract({
     ...contract,
     functionName: 'getEvents',
     args: [eventUids],
+    query: { staleTime: 5 * 60 * 1000, enabled: !!eventUids.length },
   });
 
-  function getEvent(uid: string) {
-    return events.find(x => x.uid === uid);
-  }
+  useEffect(() => {
+    const length = Number(betsLength);
+    if (!length) {
+      setBets([]);
+    }
+    if (length > 10) {
+      setPag({ from: 0, to: 10 });
+    } else {
+      setPag({ from: 0, to: length });
+    }
+  }, [betsLength]);
 
   useEffect(() => {
-    if (Array.isArray(betData)) {
-      if (betData.length) {
-        setBets(betData);
-        setEventUids([...new Set(betData.map(x => x.eventUID))]);
-        refetch();
+    if (!pag.to) {
+      setLoading(false);
+      return;
+    }
+    if (Array.isArray(betData) && betData.length) {
+      const length = Number(betsLength);
+      setLoading(true);
+      if (pag.from === 0) {
+        setBetsHelper({ [pag.to]: betData });
       } else {
-        setBets([]);
+        setBetsHelper({ ...betsHelper, [pag.to]: betData });
       }
+      if (pag.to !== length) {
+        setPag({ from: pag.from + 10, to: Math.min(pag.to + 10, Number(betsLength)) });
+      } else {
+        setLoading(false);
+        setPag({ from: 0, to: 0 });
+      }
+    } else {
+      setBets([]);
+      setLoading(false);
     }
   }, [betData]);
+
+  useEffect(() => {
+    if (Object.values(betsHelper).length && betsHelper[Number(betsLength)]?.length && !isLoading) {
+      const arr = [...Object.values(betsHelper).flat()];
+      setEventUids([...new Set(arr.map(x => x.eventUID))]);
+      setBets(arr);
+    }
+  }, [betsHelper]);
 
   useEffect(() => {
     if (Array.isArray(eventData)) {
@@ -56,37 +106,20 @@ export default function AdminBetList({ className }: ComponentProps) {
   }, [eventData]);
 
   return (
-    <div className={classNames([className], 'bg-white rounded-[24px]', 'px-8 py-10')}>
-      {!!events?.length && !!bets?.length ? (
-        <Stack gap={1} divider={<Divider flexItem className="text-gray" />}>
-          <div className="grid grid-cols-[repeat(15,minmax(0,1fr))] font-bold">
-            <div className="col-span-1">Id</div>
-            <div className="col-span-2">Match</div>
-            <div className="col-span-2">Bet</div>
-            <div className="col-span-2">Amount</div>
-            <div className="col-span-2">Multiplier</div>
-            <div className="col-span-2">Result</div>
-            <div className="col-span-2">Winnings</div>
-            <div className="col-span-2">Wallet</div>
+    <div>
+      <TableContainer
+        className={classNames([className], 'bg-white rounded-[24px] max-w-[1400px]', 'px-2')}
+      >
+        {isLoading || isLoadingBets || isLoadingEvents ? (
+          <div className="text-center p-10">
+            <CircularProgress size={40} />
           </div>
-          {bets.map(
-            bet =>
-              !!getEvent(bet.eventUID) && (
-                <AdminBetListItem
-                  key={bet.id}
-                  bet={bet}
-                  event={getEvent(bet.eventUID) as SportEvent}
-                />
-              )
-          )}
-        </Stack>
-      ) : isLoading ? (
-        <div className="text-center">
-          <CircularProgress size={40} />
-        </div>
-      ) : (
-        <div>No bets placed this day</div>
-      )}
+        ) : !!events?.length && !!bets?.length ? (
+          <AdminBetListTable bets={bets} events={events} />
+        ) : (
+          <div className="p-10">No bets placed this day</div>
+        )}
+      </TableContainer>
     </div>
   );
 }
