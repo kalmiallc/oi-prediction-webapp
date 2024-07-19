@@ -28,6 +28,13 @@ Flare Olympics Bet Showcase is a decentralized sports betting application design
 2. **Data Verification**: The Flare Data Connector fetches and verifies match results from multiple online sources, processed with the help of OpenAI.
 3. **Secure Payouts**: Verified results are used by the smart contract to manage payouts, ensuring transparency and security.
 
+Key points:
+
+- Bets can be placed until the match starts. No betting is allowed once the match has begun.
+- The maximum bet is 10% of the pool size.
+- Bets can be claimed after the final results are finalized, which is expected to be approximately 2 hours after the match's expected end time.
+- If the match is canceled, the invested funds can be withdrawn 14 days after the match start time (only supported by the contract).
+
 ## Components
 
 To fully set up and run the Flare Olympics Bet system, the following components need to be in place:
