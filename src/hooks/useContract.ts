@@ -50,6 +50,8 @@ export default function useContract() {
       value,
     });
     waitTx(hash, 'placedBet');
+
+    return hash;
   }
 
   async function claimBet(betId: bigint) {
@@ -64,6 +66,8 @@ export default function useContract() {
       args: [betId],
     });
     waitTx(hash, 'claimedBet');
+
+    return hash;
   }
 
   async function refundBet(betId: bigint) {
@@ -78,6 +82,8 @@ export default function useContract() {
       args: [betId],
     });
     waitTx(hash, 'claimedRefund');
+
+    return hash;
   }
 
   return {

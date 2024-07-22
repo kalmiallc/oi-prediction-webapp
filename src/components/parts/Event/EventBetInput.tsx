@@ -17,6 +17,7 @@ export default function EventBetInput({
   const [debouncedBet, setDebouncedBet] = useState(0);
   const maxAmount = Number(formatEther(event.poolAmount)) / 10;
   const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
+  const [resetK, setResetK] = useState(0);
 
   const schema = z.object({
     bet: z
@@ -27,6 +28,12 @@ export default function EventBetInput({
 
   function onSubmit(amount: number) {
     setBetData({ choice: choice.choiceIndex as number, amount });
+  }
+
+  function onConfirm() {
+    reset({});
+    // used to reset Input field
+    setResetK(resetK + 1);
   }
 
   const {
@@ -58,9 +65,9 @@ export default function EventBetInput({
           <Controller
             control={control}
             name="bet"
-            defaultValue={0}
             render={({ field: { value, onChange } }) => (
               <NumberInput
+                key={resetK}
                 value={value}
                 step={0.1}
                 className="!ring-primary flex-grow"
@@ -88,7 +95,7 @@ export default function EventBetInput({
         event={event}
         data={betData}
         onClose={() => setBetData(null)}
-        onConfirm={() => reset()}
+        onConfirm={() => onConfirm()}
       />
     </div>
   );

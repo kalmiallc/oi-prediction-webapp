@@ -26,6 +26,7 @@ export default function BetListTable({
         <TableHead>
           <TableRow>
             <TableCell>Match</TableCell>
+            <TableCell>Date</TableCell>
             <TableCell>Bet</TableCell>
             <TableCell>Amount</TableCell>
             <TableCell>Multiplier</TableCell>

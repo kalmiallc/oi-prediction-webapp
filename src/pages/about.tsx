@@ -1,9 +1,6 @@
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-
 export default function AboutPage() {
   return (
-    <div className="px-5 lg:px-10 max-w-[1300px] m-auto">
+    <div className="px-5 lg:px-10 max-w-[1400px] m-auto bg-white py-4 rounded-[24px]">
       <h1 id="flare-olympics-bet-showcase" className="typo-h1 mb-1">
         Flare Olympics Bet Showcase
       </h1>
@@ -15,15 +12,21 @@ export default function AboutPage() {
       <ul className="mb-4">
         <li>
           <strong>Flare network: </strong>
-          <a href="https://flare.network/">https://flare.network/</a>
+          <a href="https://flare.network/" target="_blank">
+            https://flare.network/
+          </a>
         </li>
         <li>
           <strong>Kalmia: </strong>
-          <a href="https://kalmia.si/">https://kalmia.si/</a>
+          <a href="https://kalmia.si/" target="_blank">
+            https://kalmia.si/
+          </a>
         </li>
         <li>
           <strong>AF Labs: </strong>
-          <a href="https://aflabs.si/">https://aflabs.si/</a>
+          <a href="https://aflabs.si/" target="_blank">
+            https://aflabs.si/
+          </a>
         </li>
       </ul>
       <h2 id="what-is-flare-olympics-bet-showcase" className="typo-h2 mb-1">

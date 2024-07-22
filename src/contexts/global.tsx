@@ -83,7 +83,7 @@ function GlobalProvider({ children }: { children: ReactNode }) {
     ...contract,
     functionName: 'getBetsByUser',
     args: [address],
-    query: { staleTime: 1 * 60 * 1000 },
+    query: { staleTime: 5 * 60 * 1000, enabled: !!address },
   });
 
   const { data: eventData, refetch: refetchEvents } = useReadContract({
