@@ -123,15 +123,9 @@ function GlobalProvider({ children }: { children: ReactNode }) {
       reloadBets();
       toast.success('Bet placed');
     });
-  }, [eventEmitter]);
-
-  useEffect(() => {
     eventEmitter.on('claimedBet', () => {
       toast.success('Bet winnings claimed');
     });
-  }, [eventEmitter]);
-
-  useEffect(() => {
     eventEmitter.on('claimedRefund', () => {
       toast.success('Bet refund claimed');
     });

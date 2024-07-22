@@ -26,9 +26,7 @@ export default function EventBetInput({
   });
 
   function onSubmit(amount: number) {
-    if (choice.choiceIndex) {
-      setBetData({ choice: choice.choiceIndex, amount });
-    }
+    setBetData({ choice: choice.choiceIndex as number, amount });
   }
 
   const {

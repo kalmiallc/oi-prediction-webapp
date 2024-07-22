@@ -24,6 +24,7 @@ export default function SportPage() {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const { debounce } = useDebounce();
+  const [loading, setLoading] = useState(false);
 
   // const filteredEvents = useMemo(() => {
   //   return sportEvents.filter(
@@ -91,11 +92,13 @@ export default function SportPage() {
   }, [date]);
 
   useEffect(() => {
+    setLoading(true);
     if (Array.isArray(data) && data?.length) {
       setSportEvents(getMappedEvents());
     } else {
       setSportEvents([]);
     }
+    setTimeout(() => setLoading(false), 1000);
   }, [data]);
 
   useEffect(() => {
@@ -128,7 +131,7 @@ export default function SportPage() {
           <div className="flex flex-col gap-10 items-center">
             {!!sportEvents?.length ? (
               sportEvents.map((event, i) => <EventCard event={event} key={i} />)
-            ) : isLoading ? (
+            ) : isLoading || loading ? (
               <CircularProgress size={40} className="" />
             ) : (
               <div>No events on this date</div>
