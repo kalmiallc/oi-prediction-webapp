@@ -18,7 +18,7 @@ export default function BetClaimModal({
   onClose: () => void;
   onClaim?: () => void;
 } & ComponentProps) {
-  const { claimBet, isPending, transactionConfirm } = useContract();
+  const { claimBet, isPending } = useContract();
   const { token } = useToken();
 
   async function onConfirm() {
@@ -27,8 +27,8 @@ export default function BetClaimModal({
         return;
       }
       await claimBet(bet.id);
+      onClaim?.();
       onClose();
-      toast.success('Bet winnings claimed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
@@ -36,12 +36,6 @@ export default function BetClaimModal({
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    if (transactionConfirm) {
-      onClaim?.();
-    }
-  }, [transactionConfirm]);
 
   const choice = event?.choices[bet.betChoice];
   return (

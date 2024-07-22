@@ -1,7 +1,18 @@
-import { createContext, ReactNode, useContext, useEffect, useReducer, useState } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
+import { useAccount, useConfig, useReadContract } from 'wagmi';
+import { waitForTransactionReceipt } from '@wagmi/core';
 import { betAbi } from '../lib/abi';
 import { getContractAddressForEnv } from '../lib/contracts';
+import mitt, { Emitter } from 'mitt';
+import { toast } from 'sonner';
 
 // #region types
 type Action =
@@ -45,14 +56,23 @@ function reducer(state: State, action: Action) {
 }
 
 const GlobalContext = createContext<
-  { state: State; dispatch: (action: Action) => void; reloadBets: () => void } | undefined
+  | {
+      state: State;
+      eventEmitter: Emitter<EmitEvent>;
+      dispatch: (action: Action) => void;
+      reloadBets: () => void;
+      waitTx: (hash: `0x${string}`, type: 'placedBet' | 'claimedBet' | 'claimedRefund') => void;
+    }
+  | undefined
 >(undefined);
 
 function GlobalProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState());
   const { address } = useAccount();
+  const config = useConfig();
   const [bets, setBets] = useState<Bet[]>([]);
   const [eventUids, setEventUids] = useState<string[]>([]);
+  const eventEmitter = useMemo(() => mitt<EmitEvent>(), []);
 
   const contract = {
     abi: betAbi,
@@ -98,8 +118,31 @@ function GlobalProvider({ children }: { children: ReactNode }) {
     }
   }, [eventData]);
 
+  useEffect(() => {
+    eventEmitter.on('placedBet', () => {
+      reloadBets();
+      toast.success('Bet placed');
+    });
+  }, [eventEmitter]);
+
+  useEffect(() => {
+    eventEmitter.on('claimedBet', () => {
+      toast.success('Bet winnings claimed');
+    });
+  }, [eventEmitter]);
+
+  useEffect(() => {
+    eventEmitter.on('claimedRefund', () => {
+      toast.success('Bet refund claimed');
+    });
+  }, [eventEmitter]);
+
+  function waitTx(hash: `0x${string}`, type: 'placedBet' | 'claimedBet' | 'claimedRefund') {
+    waitForTransactionReceipt(config, { hash }).then(() => eventEmitter.emit(type, hash));
+  }
+
   return (
-    <GlobalContext.Provider value={{ state, dispatch, reloadBets }}>
+    <GlobalContext.Provider value={{ state, eventEmitter, dispatch, reloadBets, waitTx }}>
       {children}
     </GlobalContext.Provider>
   );

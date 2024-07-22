@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
-import {
-  CircularProgress,
-  Divider,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-} from '@mui/material';
+import { CircularProgress, TableContainer } from '@mui/material';
 import classNames from 'classnames';
 import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
@@ -57,8 +46,8 @@ export default function AdminBetList({ className }: ComponentProps) {
     if (!length) {
       setBets([]);
     }
-    if (length > 10) {
-      setPag({ from: 0, to: 10 });
+    if (length > 500) {
+      setPag({ from: 0, to: 500 });
     } else {
       setPag({ from: 0, to: length });
     }
@@ -78,7 +67,7 @@ export default function AdminBetList({ className }: ComponentProps) {
         setBetsHelper({ ...betsHelper, [pag.to]: betData });
       }
       if (pag.to !== length) {
-        setPag({ from: pag.from + 10, to: Math.min(pag.to + 10, Number(betsLength)) });
+        setPag({ from: pag.from + 500, to: Math.min(pag.to + 500, Number(betsLength)) });
       } else {
         setLoading(false);
         setPag({ from: 0, to: 0 });

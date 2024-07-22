@@ -18,7 +18,7 @@ export default function BetRefundModal({
   onClose: () => void;
   onRefund?: () => void;
 } & ComponentProps) {
-  const { refundBet, isPending, transactionConfirm } = useContract();
+  const { refundBet, isPending } = useContract();
   const { token } = useToken();
 
   async function onConfirm() {
@@ -27,8 +27,8 @@ export default function BetRefundModal({
         return;
       }
       await refundBet(bet.id);
+      onRefund?.();
       onClose();
-      toast.success('Bet winnings claimed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
@@ -36,12 +36,6 @@ export default function BetRefundModal({
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    if (transactionConfirm) {
-      onRefund?.();
-    }
-  }, [transactionConfirm]);
 
   const choice = event?.choices[bet.betChoice];
   return (

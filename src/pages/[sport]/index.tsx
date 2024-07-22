@@ -15,7 +15,7 @@ import { useGlobalContext } from '@/contexts/global';
 
 export default function SportPage() {
   const params = useParams<{ sport: string }>();
-  const { reloadBets } = useGlobalContext();
+  const { reloadBets, eventEmitter } = useGlobalContext();
 
   const [sport, setSport] = useState<Sports | undefined>(sportByLink?.[params?.sport] || undefined);
 
@@ -48,19 +48,21 @@ export default function SportPage() {
     return Math.floor(timestamp - (timestamp % 86400));
   }
   function getMappedEvents() {
-    return (data as SportEvent[])
-      .map((x: SportEvent) => ({
-        ...x,
-        choices: x.choices.map((c, i) => ({ ...c, choiceIndex: i })),
-      }))
-      .filter(
-        x =>
-          (!timestamp || getSod(Number(x.startTime)) === timestamp) &&
-          x.title.toLowerCase().includes(search.toLowerCase())
-      )
-      .sort((a, b) => {
-        return Number(a.startTime) - Number(b.startTime);
-      });
+    return (data as SportEvent[])?.length
+      ? (data as SportEvent[])
+          .map((x: SportEvent) => ({
+            ...x,
+            choices: x.choices.map((c, i) => ({ ...c, choiceIndex: i })),
+          }))
+          .filter(
+            x =>
+              (!timestamp || getSod(Number(x.startTime)) === timestamp) &&
+              x.title.toLowerCase().includes(search.toLowerCase())
+          )
+          .sort((a, b) => {
+            return Number(a.startTime) - Number(b.startTime);
+          })
+      : [];
   }
 
   useEffect(() => {
@@ -96,10 +98,9 @@ export default function SportPage() {
     }
   }, [data]);
 
-  function onBet() {
-    refetch();
-    reloadBets();
-  }
+  useEffect(() => {
+    eventEmitter.on('placedBet', () => refetch());
+  }, [eventEmitter]);
 
   return (
     <div className="md:px-24 md:max-w-[1200px] m-auto">
@@ -126,7 +127,7 @@ export default function SportPage() {
           </div>
           <div className="flex flex-col gap-10 items-center">
             {!!sportEvents?.length ? (
-              sportEvents.map((event, i) => <EventCard event={event} key={i} onBet={onBet} />)
+              sportEvents.map((event, i) => <EventCard event={event} key={i} />)
             ) : isLoading ? (
               <CircularProgress size={40} className="" />
             ) : (

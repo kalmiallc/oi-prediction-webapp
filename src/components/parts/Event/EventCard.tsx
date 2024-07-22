@@ -7,21 +7,13 @@ import EventBetInput from './EventBetInput';
 import { formatEther } from 'viem';
 import EventClaimButton from './EventClaimButton';
 import useToken from '@/hooks/useToken';
-import { songbird } from 'viem/chains';
 import { Tooltip } from '@mui/material';
 dayjs.extend(relativeTime);
 
-export default function EventCard({
-  className,
-  event,
-  onBet: onBetConfirm,
-}: { event: SportEvent; onBet: () => void } & ComponentProps) {
-  const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
+export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
   const [choices, setChoices] = useState([] as (Choice & { fake: boolean })[]);
   const { token } = useToken();
-  function onBet(amount: number, choiceIndex: number) {
-    setBetData({ amount, choice: choiceIndex });
-  }
+
   useEffect(() => {
     const chs = event.choices.map(x => ({ ...x, fake: false }));
     // insert fake draw choice if no draw
@@ -112,13 +104,7 @@ export default function EventCard({
                   </div>
                 )
               ) : event.winner === 0 && !hasStarted ? (
-                !choice.fake && (
-                  <EventBetInput
-                    event={event}
-                    choice={choice}
-                    onBet={x => onBet(x, choice.choiceIndex as number)}
-                  />
-                )
+                !choice.fake && <EventBetInput event={event} choice={choice} />
               ) : (
                 <div className="text-center text-gray pb-10">
                   {event.winner === choice.choiceId && (
@@ -130,12 +116,6 @@ export default function EventCard({
             </div>
           ))}
         </div>
-        <EventBetConfirmModal
-          event={event}
-          data={betData}
-          onClose={() => setBetData(null)}
-          onConfirm={onBetConfirm}
-        />
       </div>
     </div>
   );

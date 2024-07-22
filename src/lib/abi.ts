@@ -163,6 +163,23 @@ export const betAbi = [
   },
   {
     type: 'function',
+    stateMutability: 'payable',
+    outputs: [],
+    name: 'bulkCreateSportEvent',
+    inputs: [
+      { type: 'string[]', name: 'title', internalType: 'string[]' },
+      { type: 'string[]', name: 'teams', internalType: 'string[]' },
+      { type: 'uint256[]', name: 'startTime', internalType: 'uint256[]' },
+      { type: 'uint8[]', name: 'gender', internalType: 'uint8[]' },
+      { type: 'uint8[]', name: 'sport', internalType: 'enum OIBetShowcase.Sports[]' },
+      { type: 'string[][]', name: 'choices', internalType: 'string[][]' },
+      { type: 'uint32[][]', name: 'initialVotes', internalType: 'uint32[][]' },
+      { type: 'uint256[]', name: 'initialPool', internalType: 'uint256[]' },
+      { type: 'bytes32[]', name: '_uid', internalType: 'bytes32[]' },
+    ],
+  },
+  {
+    type: 'function',
     stateMutability: 'view',
     outputs: [{ type: 'uint256', name: '', internalType: 'uint256' }],
     name: 'calculateAproximateBetReturn',

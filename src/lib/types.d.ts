@@ -48,3 +48,9 @@ interface Bet {
 interface BetWithEvent extends Bet {
   event: SportEvent;
 }
+
+type EmitEvent = {
+  placedBet: string;
+  claimedBet: string;
+  claimedRefund: string;
+};

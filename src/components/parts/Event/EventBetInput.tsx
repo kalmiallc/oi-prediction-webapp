@@ -6,16 +6,17 @@ import { Controller } from 'react-hook-form';
 import EventBetMultiplier from './EventBetMultiplier';
 import useDebounce from '@/hooks/useDebounce';
 import { formatEther } from 'viem';
+import EventBetConfirmModal from './EventBetConfirmModal';
 
 export default function EventBetInput({
   event,
   choice,
-  onBet,
-}: { event: SportEvent; choice: Choice; onBet: (amount: number) => void } & ComponentProps) {
+}: { event: SportEvent; choice: Choice } & ComponentProps) {
   const { debounce } = useDebounce();
 
   const [debouncedBet, setDebouncedBet] = useState(0);
   const maxAmount = Number(formatEther(event.poolAmount)) / 10;
+  const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
 
   const schema = z.object({
     bet: z
@@ -24,11 +25,18 @@ export default function EventBetInput({
       .max(maxAmount, 'Amount can not go over 10% of the pool'),
   });
 
+  function onSubmit(amount: number) {
+    if (choice.choiceIndex) {
+      setBetData({ choice: choice.choiceIndex, amount });
+    }
+  }
+
   const {
     control,
     handleSubmit,
     watch,
     trigger,
+    reset,
     formState: { errors },
   } = useFormSchema(schema);
   const watchBet = watch('bet');
@@ -46,7 +54,7 @@ export default function EventBetInput({
 
   return (
     <div className="flex flex-col w-full max-w-[220px]">
-      <form onSubmit={handleSubmit(data => onBet(data.bet))} noValidate>
+      <form onSubmit={handleSubmit(data => onSubmit(data.bet))} noValidate>
         <div className="text-gray text-sm mb-2 ">{choiceName}</div>
         <div className="flex min-w-[150px] border-primary rounded-lg bg-primary">
           <Controller
@@ -77,6 +85,12 @@ export default function EventBetInput({
         choice={choice.choiceIndex as number}
         initial={Number(choice?.currentMultiplier) / 1000}
         amount={debouncedBet}
+      />
+      <EventBetConfirmModal
+        event={event}
+        data={betData}
+        onClose={() => setBetData(null)}
+        onConfirm={() => reset()}
       />
     </div>
   );

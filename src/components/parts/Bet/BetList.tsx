@@ -12,6 +12,7 @@ export default function BetList({
 }: { timestamp: number | null } & ComponentProps) {
   const {
     dispatch,
+    eventEmitter,
     state: { bets: addressBets },
   } = useGlobalContext();
   const { address } = useAccount();

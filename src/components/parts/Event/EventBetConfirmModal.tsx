@@ -13,16 +13,10 @@ export default function EventBetConfirmModal({
   event: SportEvent;
   data: { choice: number; amount: number } | null;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
 } & ComponentProps) {
-  const { placeBet, isPending, transactionConfirm } = useContract();
+  const { placeBet, isPending } = useContract();
   const { token } = useToken();
-
-  useEffect(() => {
-    if (transactionConfirm) {
-      onConfirm();
-    }
-  }, [transactionConfirm]);
 
   async function onBet() {
     try {
@@ -30,8 +24,8 @@ export default function EventBetConfirmModal({
         return;
       }
       await placeBet(event.uid, data.choice, data.amount);
+      onConfirm?.();
       onClose();
-      toast.success('Bet placed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);

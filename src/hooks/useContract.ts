@@ -4,16 +4,13 @@ import { getContractAddressForEnv } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
 import { songbirdTestnet } from 'viem/chains';
+import { useGlobalContext } from '../contexts/global';
 
 export default function useContract() {
-  const { data: hash, writeContractAsync, isPending } = useWriteContract();
+  const { writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
-
-  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-    query: { enabled: !!hash },
-  });
+  const { waitTx } = useGlobalContext();
 
   async function check() {
     if (!address) {
@@ -34,50 +31,53 @@ export default function useContract() {
     }
   }
 
-  const contractAddress = getContractAddressForEnv(process.env.NODE_ENV);
+  const contract = {
+    abi: betAbi,
+    address: getContractAddressForEnv(process.env.NODE_ENV),
+  };
 
   async function placeBet(betUuid: string, choiceId: number, amount: number) {
     await check();
-    if (!contractAddress) {
+    if (!contract.address) {
       return;
     }
 
     const value = parseEther(amount.toString());
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'placeBet',
       args: [betUuid, choiceId],
       value,
     });
+    waitTx(hash, 'placedBet');
   }
 
   async function claimBet(betId: bigint) {
     await check();
-    if (!contractAddress) {
+    if (!contract.address) {
       return;
     }
 
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'claimWinnings',
       args: [betId],
     });
+    waitTx(hash, 'claimedBet');
   }
 
   async function refundBet(betId: bigint) {
     await check();
-    if (!contractAddress) {
+    if (!contract.address) {
       return;
     }
 
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'refund',
       args: [betId],
     });
+    waitTx(hash, 'claimedRefund');
   }
 
   return {
@@ -85,6 +85,5 @@ export default function useContract() {
     claimBet,
     refundBet,
     isPending: isPending || isPendingChain,
-    transactionConfirm: isConfirmed,
   };
 }
