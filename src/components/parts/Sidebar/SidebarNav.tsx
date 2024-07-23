@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 import { Sports, sportsNames } from '@/lib/values';
 import SidebarNavBtn from './SidebarNavBtn';
 
@@ -36,17 +35,21 @@ export default function SidebarNav({ className }: ComponentProps) {
   ];
   const isAdmin = true;
   return (
-    <div className={classNames(['overflow-y-auto overflow-x-hidden break-words', className])}>
+    <div className={classNames(['flex flex-col h-full flex-grow justify-between', className])}>
       <div>
         <div className="mb-4">
-          <SidebarNavBtn href="/bets">My bets</SidebarNavBtn>
-          {isAdmin && <SidebarNavBtn href="/bets/admin">All bets</SidebarNavBtn>}
+          <SidebarNavBtn href="/predictions">My predictions</SidebarNavBtn>
+          {isAdmin && <SidebarNavBtn href="/predictions/admin">All predictions</SidebarNavBtn>}
         </div>
         {sports.map((sport, i) => (
           <SidebarNavBtn key={'sport-' + i} href={sport.link}>
             {sport.name}
           </SidebarNavBtn>
         ))}
+      </div>
+      <div className="mt-4">
+        <SidebarNavBtn href="/faucet">Get OI Coins</SidebarNavBtn>
+        <SidebarNavBtn href="/about">How it works</SidebarNavBtn>
       </div>
     </div>
   );

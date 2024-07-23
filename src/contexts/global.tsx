@@ -9,10 +9,11 @@ import {
 } from 'react';
 import { useAccount, useConfig, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from '@wagmi/core';
-import { betAbi } from '../lib/abi';
-import { getContractAddressForEnv } from '../lib/contracts';
+import { betAbi, OIAbi } from '../lib/abi';
+import { ContractType, getContractAddressForEnv } from '../lib/contracts';
 import mitt, { Emitter } from 'mitt';
 import { toast } from 'sonner';
+import { formatUnits } from 'viem';
 
 // #region types
 type Action =
@@ -20,12 +21,21 @@ type Action =
       type: 'setBets';
       payload: { address: `0x${string}`; bets: BetWithEvent[] };
     }
-  | { type: 'setTimestamp'; payload: number | undefined };
+  | { type: 'setTimestamp'; payload: number | undefined }
+  | { type: 'setSidebarOpen'; payload: boolean }
+  | { type: 'switchSidebarOpen' }
+  | { type: 'setBalance'; payload: number }
+  | { type: 'setAllowance'; payload: boolean };
 
 type State = {
   timestamp: number | undefined;
   bets: { [address: `0x${string}`]: BetWithEvent[] };
+  sidebarOpen: boolean;
+  balance: number;
+  allowance: boolean;
 };
+
+type TxTypes = 'placedBet' | 'claimedBet' | 'claimedRefund' | 'claimedToken';
 // #endregion
 
 const initialState = () =>
@@ -33,6 +43,9 @@ const initialState = () =>
     timestamp: undefined,
     bets: {},
     events: [],
+    sidebarOpen: false,
+    balance: 0,
+    allowance: false,
   }) as State;
 
 function reducer(state: State, action: Action) {
@@ -49,6 +62,30 @@ function reducer(state: State, action: Action) {
         timestamp: action.payload,
       };
     }
+    case 'setSidebarOpen': {
+      return {
+        ...state,
+        sidebarOpen: action.payload,
+      };
+    }
+    case 'switchSidebarOpen': {
+      return {
+        ...state,
+        sidebarOpen: !state.sidebarOpen,
+      };
+    }
+    case 'setBalance': {
+      return {
+        ...state,
+        balance: action.payload,
+      };
+    }
+    case 'setAllowance': {
+      return {
+        ...state,
+        allowance: action.payload,
+      };
+    }
     default: {
       throw new Error(('Unhandled action type: ' + action) as any);
     }
@@ -61,7 +98,8 @@ const GlobalContext = createContext<
       eventEmitter: Emitter<EmitEvent>;
       dispatch: (action: Action) => void;
       reloadBets: () => void;
-      waitTx: (hash: `0x${string}`, type: 'placedBet' | 'claimedBet' | 'claimedRefund') => void;
+      reloadAllowance: () => void;
+      waitTx: (hash: `0x${string}`, type: TxTypes) => void;
     }
   | undefined
 >(undefined);
@@ -76,7 +114,12 @@ function GlobalProvider({ children }: { children: ReactNode }) {
 
   const contract = {
     abi: betAbi,
-    address: getContractAddressForEnv(process.env.NODE_ENV),
+    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+  };
+
+  const tokenContract = {
+    abi: OIAbi,
+    address: getContractAddressForEnv(ContractType.OI_TOKEN, process.env.NODE_ENV),
   };
 
   const { data: betData, refetch: reloadBets } = useReadContract({
@@ -91,6 +134,20 @@ function GlobalProvider({ children }: { children: ReactNode }) {
     functionName: 'getEvents',
     args: [eventUids],
     query: { staleTime: 5 * 60 * 1000, enabled: !!eventUids.length },
+  });
+
+  const { data: balanceData, refetch: reloadBalance } = useReadContract({
+    ...tokenContract,
+    functionName: 'balanceOf',
+    args: [address],
+    query: { staleTime: 1 * 60 * 1000, enabled: !!address },
+  });
+
+  const { data: allowanceData, refetch: reloadAllowance } = useReadContract({
+    ...tokenContract,
+    functionName: 'allowance',
+    args: [address, contract.address],
+    query: { staleTime: 1 * 60 * 1000, enabled: !!address && !!contract.address },
   });
 
   useEffect(() => {
@@ -119,24 +176,62 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   }, [eventData]);
 
   useEffect(() => {
+    if (!address || !balanceData) {
+      dispatch({
+        type: 'setBalance',
+        payload: 0,
+      });
+    }
+    if (balanceData) {
+      dispatch({
+        type: 'setBalance',
+        payload: Number(Number(formatUnits(BigInt(balanceData as any), 18)).toFixed(4)),
+      });
+    }
+  }, [balanceData, address]);
+
+  useEffect(() => {
+    if ((Number(allowanceData) || 0) > 1_000_000) {
+      dispatch({
+        type: 'setAllowance',
+        payload: true,
+      });
+    } else {
+      dispatch({
+        type: 'setAllowance',
+        payload: false,
+      });
+    }
+  }, [allowanceData, address]);
+
+  useEffect(() => {
     eventEmitter.on('placedBet', () => {
       reloadBets();
+      reloadBalance();
       toast.success('Bet placed');
     });
     eventEmitter.on('claimedBet', () => {
+      reloadBalance();
       toast.success('Bet winnings claimed');
     });
     eventEmitter.on('claimedRefund', () => {
+      reloadBalance();
       toast.success('Bet refund claimed');
+    });
+    eventEmitter.on('claimedToken', () => {
+      reloadBalance();
+      toast.success('OI Coins claimed');
     });
   }, [eventEmitter]);
 
-  function waitTx(hash: `0x${string}`, type: 'placedBet' | 'claimedBet' | 'claimedRefund') {
+  function waitTx(hash: `0x${string}`, type: TxTypes) {
     waitForTransactionReceipt(config, { hash }).then(() => eventEmitter.emit(type, hash));
   }
 
   return (
-    <GlobalContext.Provider value={{ state, eventEmitter, dispatch, reloadBets, waitTx }}>
+    <GlobalContext.Provider
+      value={{ state, eventEmitter, dispatch, reloadBets, reloadAllowance, waitTx }}
+    >
       {children}
     </GlobalContext.Provider>
   );

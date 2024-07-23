@@ -2,17 +2,14 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import EventBetConfirmModal from './EventBetConfirmModal';
 import EventBetInput from './EventBetInput';
 import { formatEther } from 'viem';
 import EventClaimButton from './EventClaimButton';
-import useToken from '@/hooks/useToken';
 import { Tooltip } from '@mui/material';
 dayjs.extend(relativeTime);
 
 export default function EventCard({ className, event }: { event: SportEvent } & ComponentProps) {
   const [choices, setChoices] = useState([] as (Choice & { fake: boolean })[]);
-  const { token } = useToken();
 
   useEffect(() => {
     const chs = event.choices.map(x => ({ ...x, fake: false }));
@@ -48,14 +45,14 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
     <div className="relative mt-10 w-full">
       <div
         className={classNames([
-          'absolute px-5 h-full z-0 w-full pt-3.5 -top-10 rounded-t-[24px]',
+          'absolute px-5 h-full z-0 w-full pt-3.5 -top-16 md:-top-10 rounded-t-[24px]',
           'bg-secondary text-white font-bold text-sm',
           'shadow-[0_4px_4px_0] shadow-black/25',
           'justify-between flex',
         ])}
       >
         <p>{event.title}</p>
-        <p>Pool total: {formatEther(event.poolAmount) + ' ' + token} </p>
+        <p>Pool total: {Number(Number(formatEther(event.poolAmount)).toFixed(4)) + ' OI'} </p>
       </div>
 
       <div
@@ -75,7 +72,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
               {
                 name: 'offset',
                 options: {
-                  offset: [0, -14],
+                  offset: [0, -10],
                 },
               },
             ],

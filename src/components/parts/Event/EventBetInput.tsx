@@ -7,22 +7,27 @@ import EventBetMultiplier from './EventBetMultiplier';
 import useDebounce from '@/hooks/useDebounce';
 import { formatEther } from 'viem';
 import EventBetConfirmModal from './EventBetConfirmModal';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function EventBetInput({
   event,
   choice,
 }: { event: SportEvent; choice: Choice } & ComponentProps) {
   const { debounce } = useDebounce();
-
+  const {
+    state: { balance },
+  } = useGlobalContext();
   const [debouncedBet, setDebouncedBet] = useState(0);
-  const maxAmount = Number(formatEther(event.poolAmount)) / 10;
   const [betData, setBetData] = useState(null as { choice: number; amount: number } | null);
   const [resetK, setResetK] = useState(0);
+
+  const maxAmount = Number(formatEther(event.poolAmount)) / 10;
 
   const schema = z.object({
     bet: z
       .number()
       .min(0.01, 'Invalid amount')
+      .max(balance, 'Insufficient balance')
       .max(maxAmount, 'Amount can not go over 10% of the pool'),
   });
 

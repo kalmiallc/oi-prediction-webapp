@@ -53,4 +53,5 @@ type EmitEvent = {
   placedBet: string;
   claimedBet: string;
   claimedRefund: string;
+  claimedToken: string;
 };

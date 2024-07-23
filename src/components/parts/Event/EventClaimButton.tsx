@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useGlobalContext } from '../../../contexts/global';
+import { useGlobalContext } from '@/contexts/global';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
 
@@ -17,7 +17,7 @@ export default function EventClaimButton({
   const [canClaim, setCanClaim] = useState(false);
 
   function onConfirm() {
-    router.replace('/bets');
+    router.replace('/predictions');
     return;
   }
 

@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import classNames from 'classnames';
 import { TableCell, TableRow, Tooltip } from '@mui/material';
-import useToken from '@/hooks/useToken';
 
 dayjs.extend(relativeTime);
 
@@ -13,8 +12,6 @@ export default function AdminBetListItem({
   bet,
   event,
 }: { bet: Bet; event: SportEvent; onClaim?: () => void } & ComponentProps) {
-  const { token } = useToken();
-
   function parseBetAmount(amount: bigint) {
     return formatUnits(amount, 18);
   }
@@ -33,7 +30,7 @@ export default function AdminBetListItem({
             {
               name: 'offset',
               options: {
-                offset: [0, -14],
+                offset: [0, -10],
               },
             },
           ],
@@ -43,7 +40,8 @@ export default function AdminBetListItem({
       </Tooltip>
       <TableCell>{choice?.choiceName}</TableCell>
       <TableCell>
-        {parseBetAmount(bet.betAmount)} {token}
+        {parseBetAmount(bet.betAmount)}
+        {' OI'}
       </TableCell>
       <TableCell>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</TableCell>
       <TableCell>
@@ -54,10 +52,8 @@ export default function AdminBetListItem({
         {pending
           ? 'Pending'
           : hasWon
-            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) +
-              ' ' +
-              token
-            : '0 ' + token}
+            ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) + ' OI'
+            : '0 OI'}
       </TableCell>
       <TableCell className=" truncate">{bet.bettor}</TableCell>
     </TableRow>

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
 import classNames from 'classnames';
 import { formatEther, parseEther } from 'viem';
-import useToken from '@/hooks/useToken';
 
 export default function EventBetMultiplier({
   className,
@@ -15,14 +14,13 @@ export default function EventBetMultiplier({
 }: { event: string; choice: number; initial: number; amount: number } & ComponentProps) {
   const [newMulti, setNewMulti] = useState(0);
   const [newReturn, setNewReturn] = useState(initial * amount);
-  const { token } = useToken();
   const {
     data: aproxReturn,
     refetch,
     isLoading,
   } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(process.env.NODE_ENV),
+    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
     functionName: 'calculateAproximateBetReturn',
     args: [parseEther(amount.toString()).toString(), choice, event],
     query: { staleTime: 1 * 60 * 1000, enabled: !!amount },
@@ -58,7 +56,7 @@ export default function EventBetMultiplier({
         </span>
       </div>
       <div>
-        Potential {token} Returns:{' '}
+        Potential OI Returns:{' '}
         <span className="text-black font-bold">
           {(newReturn || isLoading ? newReturn : initial * amount).toFixed(2)}
         </span>

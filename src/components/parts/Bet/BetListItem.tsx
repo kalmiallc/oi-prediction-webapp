@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import BetClaimModal from './BetClaimModal';
 import BetRefundModal from './BetRefundModal';
-import useToken from '@/hooks/useToken';
 
 dayjs.extend(relativeTime);
 
@@ -17,7 +16,6 @@ export default function BetListItem({
 }: { bet: Bet; event: SportEvent; onClaim?: () => void; onRefund?: () => void } & ComponentProps) {
   const [showClaim, setShowClaim] = useState<boolean>(false);
   const [showRefund, setShowRefund] = useState<boolean>(false);
-  const { token } = useToken();
 
   function parseBetAmount(amount: bigint) {
     return formatUnits(amount, 18);
@@ -45,7 +43,7 @@ export default function BetListItem({
             {
               name: 'offset',
               options: {
-                offset: [0, -14],
+                offset: [0, -10],
               },
             },
           ],
@@ -56,7 +54,8 @@ export default function BetListItem({
       <TableCell>{dayjs(Number(event.startTime) * 1000).format('MM/DD/YYYY HH:mm')}</TableCell>
       <TableCell>{choice?.choiceName}</TableCell>
       <TableCell>
-        {Number(parseBetAmount(bet.betAmount)).toFixed(1)} {token}
+        {Number(parseBetAmount(bet.betAmount)).toFixed(1)}
+        {' OI'}
       </TableCell>
       <TableCell>x{(Number(bet.winMultiplier) / 1000).toFixed(2)}</TableCell>
       <TableCell>
@@ -74,9 +73,8 @@ export default function BetListItem({
             ? 'Pending'
             : hasWon
               ? (Number(parseBetAmount(bet.winMultiplier * bet.betAmount)) / 1000).toFixed(2) +
-                ' ' +
-                token
-              : '0 ' + token}
+                ' OI'
+              : '0 OI'}
       </TableCell>
       <TableCell className="text-center">
         {pending || hasWon ? (

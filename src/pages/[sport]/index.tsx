@@ -1,6 +1,6 @@
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
 import { useEffect, useMemo, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
@@ -36,7 +36,7 @@ export default function SportPage() {
 
   const { data, isLoading, refetch } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(process.env.NODE_ENV),
+    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
     functionName: 'getSportEventsBySport',
     args: [sport],
     query: { staleTime: 1 * 60 * 1000 },
@@ -109,7 +109,7 @@ export default function SportPage() {
     <div className="md:px-24 md:max-w-[1200px] m-auto">
       {sport != null && (
         <>
-          <div className="flex md:flex-nowrap flex-wrap justify-between mb-8 items-center gap-4">
+          <div className="flex md:flex-nowrap flex-wrap justify-between mb-12 md:mb-8 items-center gap-4">
             <h1 className="typo-h1 shrink-0">{sportsNames[sport]}</h1>
             <div className="flex gap-4 md:justify-end justify-between w-full">
               <TextField
@@ -128,7 +128,7 @@ export default function SportPage() {
               />
             </div>
           </div>
-          <div className="flex flex-col gap-10 items-center">
+          <div className="flex flex-col gap-14 md:gap-10 items-center">
             {!!sportEvents?.length ? (
               sportEvents.map((event, i) => <EventCard event={event} key={i} />)
             ) : isLoading || loading ? (

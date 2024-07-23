@@ -2,21 +2,21 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { Button } from '@mui/material';
 import Link from 'next/link';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function SidebarNavBtn({
   className,
   href,
   disableActive = false,
   activeClass = '!text-primary font-bold',
-  onClick,
   children,
 }: {
   href: string;
   disableActive?: boolean;
   activeClass?: string;
-  onClick?: () => void;
 } & ComponentProps) {
   const router = useRouter();
+  const { dispatch } = useGlobalContext();
 
   const pathWithoutQuery = router.asPath.replace(/\/*\?.*$/, '');
   const isActive = pathWithoutQuery.replaceAll('/', '') === href.replaceAll('/', '');
@@ -32,7 +32,7 @@ export default function SidebarNavBtn({
           [activeClass]: isActive && !disableActive,
         },
       ])}
-      onClick={onClick}
+      onClick={() => dispatch({ type: 'setSidebarOpen', payload: false })}
     >
       {children}
     </Button>

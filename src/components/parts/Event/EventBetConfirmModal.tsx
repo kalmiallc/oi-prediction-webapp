@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
-import useToken from '@/hooks/useToken';
 
 export default function EventBetConfirmModal({
   event,
@@ -16,14 +15,16 @@ export default function EventBetConfirmModal({
   onConfirm?: () => void;
 } & ComponentProps) {
   const { placeBet, isPending } = useContract();
-  const { token } = useToken();
+  const [loading, setLoading] = useState(false);
 
   async function onBet() {
     try {
       if (!data) {
         return;
       }
+      setLoading(true);
       await placeBet(event.uid, data.choice, data.amount);
+      setLoading(false);
       onConfirm?.();
       onClose();
     } catch (error: any) {
@@ -31,6 +32,7 @@ export default function EventBetConfirmModal({
         toast.error(error?.shortMessage);
       }
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -45,7 +47,7 @@ export default function EventBetConfirmModal({
       isOpen={!!data?.choice?.toString()}
       onClose={() => onClose?.()}
       onConfirm={() => onBet()}
-      isLoading={isPending}
+      isLoading={isPending || loading}
       title="Confirm your bet?"
     >
       <div className="text-gray ">
@@ -54,7 +56,8 @@ export default function EventBetConfirmModal({
           {choice}
           {choice.toLowerCase() !== 'draw' ? ' to win: ' : ': '}
           <span className="font-bold">
-            {data.amount} {token}
+            {data.amount}
+            {' OI'}
           </span>
         </p>
       </div>
