@@ -22,8 +22,8 @@ function ContractTemplate(
 const Contracts = {
   [ContractType.BET_SHOWCASE]: ContractTemplate(
     betAbi,
-    '0x940D34025e4b33672e478711a4929e185B906FE6', // prod
-    '0x940D34025e4b33672e478711a4929e185B906FE6' // dev
+    '0x91fDab8AadcEdA5FAb8A9a6b8760086Ac7a4D93f', // prod
+    '0x91fDab8AadcEdA5FAb8A9a6b8760086Ac7a4D93f' // dev
   ),
   [ContractType.OI_TOKEN]: ContractTemplate(
     OIAbi,
