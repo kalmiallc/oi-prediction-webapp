@@ -33,13 +33,11 @@ export default function SidebarNav({ className }: ComponentProps) {
       link: '/waterpolo',
     },
   ];
-  const isAdmin = true;
   return (
     <div className={classNames(['flex flex-col h-full flex-grow justify-between', className])}>
       <div>
         <div className="mb-4">
           <SidebarNavBtn href="/predictions">My predictions</SidebarNavBtn>
-          {isAdmin && <SidebarNavBtn href="/predictions/admin">All predictions</SidebarNavBtn>}
         </div>
         {sports.map((sport, i) => (
           <SidebarNavBtn key={'sport-' + i} href={sport.link}>
