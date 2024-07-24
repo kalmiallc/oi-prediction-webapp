@@ -1,12 +1,12 @@
 export default function AboutPage() {
   return (
     <div className="px-5 lg:px-10 max-w-[1400px] m-auto bg-white py-4 rounded-[24px]">
-      <h1 id="flare-olympics-bet-showcase" className="typo-h1 mb-1">
-        Flare Olympics Bet Showcase
+      <h1 id="flare-olympics-prediction-showcase" className="typo-h1 mb-1">
+        Flare Olympics Prediction Showcase
       </h1>
       <p className="mb-2">
-        Welcome to Flare Olympics Bet, an innovative on-chain betting system utilizing Flare Oracle
-        Data connector to enhance your betting experience with Olympic sports data.
+        Welcome to Flare Olympics Prediction, an innovative on-chain prediction system utilizing
+        Flare Oracle Data connector to enhance your prediction experience with Olympic sports data.
       </p>
       <p>This showcase was developed in cooperation with:</p>
       <ul className="mb-4">
@@ -29,19 +29,19 @@ export default function AboutPage() {
           </a>
         </li>
       </ul>
-      <h2 id="what-is-flare-olympics-bet-showcase" className="typo-h2 mb-1">
-        What is Flare Olympics Bet Showcase?
+      <h2 id="what-is-flare-olympics-prediction-showcase" className="typo-h2 mb-1">
+        What is Flare Olympics Prediction Showcase?
       </h2>
       <p className="mb-2">
         <strong>Note</strong>: This application is intended for testing purposes only. There is no
         real business value behind.
       </p>
       <p className="mb-4">
-        Flare Olympics Bet Showcase is a decentralized sports betting application designed
-        specifically for the Olympics. Users can place bets on various team sports events with
-        simple outcomes: win, lose, or draw. This open-source project showcases the powerful
+        Flare Olympics Prediction Showcase is a decentralized sports prediction application designed
+        specifically for the Olympics. Users can place predictions on various team sports events
+        with simple outcomes: win, lose, or draw. This open-source project showcases the powerful
         capabilities of Flare&#39;s advanced features, ensuring that sports results are directly
-        reflected on the blockchain for secure and transparent betting.
+        reflected on the blockchain for secure and transparent predictions.
       </p>
       <h2 id="key-features" className="typo-h2 mb-1">
         Key Features
@@ -49,8 +49,8 @@ export default function AboutPage() {
       <ul className="mb-4">
         <li>
           <strong>User-Friendly Interface</strong>: The frontend is designed for ease of use,
-          allowing you to deposit funds, place bets, and withdraw winnings efficiently using your
-          wallet credentials.
+          allowing you to deposit funds, place predictions, and withdraw winnings efficiently using
+          your wallet credentials.
         </li>
         <li>
           <strong>Flare Data Connector</strong>: This application leverages the Flare Data Connector
@@ -59,11 +59,11 @@ export default function AboutPage() {
         </li>
         <li>
           <strong>Full dApp Integration</strong>: Seamlessly integrates with smart contracts for a
-          decentralized betting experience, handling all interactions securely on-chain.
+          decentralized prediction experience, handling all interactions securely on-chain.
         </li>
         <li>
-          <strong>Dynamic Betting Multipliers</strong>: The betting logic uses dynamic multipliers
-          to ensure fair and balanced payouts based on the pool of bets.
+          <strong>Dynamic Prediction Multipliers</strong>: The prediction logic uses dynamic
+          multipliers to ensure fair and balanced payouts based on the pool of predictions.
         </li>
       </ul>
       <h2 id="how-it-works" className="typo-h2 mb-1">
@@ -71,8 +71,8 @@ export default function AboutPage() {
       </h2>
       <ol className="mb-2">
         <li>
-          <strong>Place Bets</strong>: Use your wallet to deposit funds and place bets on Olympic
-          events.
+          <strong>Place Prediction</strong>: Use your wallet to deposit funds and place predictions
+          on Olympic events.
         </li>
         <li>
           <strong>Data Verification</strong>: The Flare Data Connector fetches and verifies match
@@ -86,11 +86,12 @@ export default function AboutPage() {
       <strong>Key points:</strong>
       <ul className="mb-2">
         <li>
-          Bets can be placed until the match starts. No betting is allowed once the match has begun.
+          Predictions can be placed until the match starts. No predictions are allowed once the
+          match has begun.
         </li>
-        <li>The maximum bet is 10% of the pool size.</li>
+        <li>The maximum prediction is 10% of the pool size.</li>
         <li>
-          Bets can be claimed after the final results are finalized, which is expected to be
+          Predictions can be claimed after the final results are finalized, which is expected to be
           approximately 2 hours after the match&#39;s expected end time.
         </li>
         <li>
@@ -103,16 +104,16 @@ export default function AboutPage() {
         Components
       </h2>
       <p>
-        To fully set up and run the Flare Olympics Bet system, the following components need to be
-        in place:
+        To fully set up and run the Flare Olympics Prediction system, the following components need
+        to be in place:
       </p>
       <ul className="mb-4">
         <li>
-          <strong>Betting Smart Contract</strong>: Manages all betting logic and interactions.
+          <strong>Prediction Smart Contract</strong>: Manages all prediction logic and interactions.
         </li>
         <li>
-          <strong>Front-End Application</strong>: User interface for placing bets and managing
-          funds.
+          <strong>Front-End Application</strong>: User interface for placing predictions and
+          managing funds.
         </li>
         <li>
           <strong>Backend Application</strong>: Calls provider API for verification.
@@ -121,27 +122,28 @@ export default function AboutPage() {
           <strong>Verification Server</strong>: Ensures the integrity of match results data.
         </li>
       </ul>
-      <h2 id="betting-logic" className="typo-h2 mb-1">
-        Betting Logic
+      <h2 id="prediction-logic" className="typo-h2 mb-1">
+        Prediction Logic
       </h2>
       <p className="mb-2">
-        The betting logic operates on dynamic multipliers. Users purchase multiplied amounts (bet
-        amounts multiplied by the win multiplier). When a bet is placed, the multiplied amount is
-        stored, guaranteeing the claim amount will be paid when the event concludes.
+        The prediction logic operates on dynamic multipliers. Users purchase multiplied amounts
+        (prediction amounts multiplied by the win multiplier). When a prediction is placed, the
+        multiplied amount is stored, guaranteeing the claim amount will be paid when the event
+        concludes.
       </p>
       <p className="mb-2">
-        All multiplied bets for each game are placed in a bet pool. The sum of amounts for each
-        choice cannot exceed the total bets in the pool.
+        All multiplied predictions for each game are placed in a prediction pool. The sum of amounts
+        for each choice cannot exceed the total predictions in the pool.
       </p>
       <p className="mb-2">
-        The multiplier is calculated each time a user places a bet. The number of bets against the
-        complete pool defines the multiplier factor. The more bets placed on one choice, the lower
-        the multiplier factor for that choice, and the higher the multiplier factors for other
-        choices.
+        The multiplier is calculated each time a user places a prediction. The number of predictions
+        against the complete pool defines the multiplier factor. The more predictions placed on one
+        choice, the lower the multiplier factor for that choice, and the higher the multiplier
+        factors for other choices.
       </p>
       <p className="mb-4">
         An initial pool and factors need to be set by the administrator, along with the initial pool
-        of tokens. Each bet can only be 1/10 of the pool size.
+        of tokens. Each prediction can only be 1/10 of the pool size.
       </p>
       <h2 id="flare-data-connector-results" className="typo-h2">
         Flare Data Connector - Results
@@ -176,13 +178,13 @@ export default function AboutPage() {
         </a>
       </p>
       <p className="mb-2">
-        Flare Olympics Bet is compatible with both the Coston and Songbird networks, showcasing its
-        flexibility and interoperability.
+        Flare Olympics Prediction is compatible with both the Coston and Songbird networks,
+        showcasing its flexibility and interoperability.
       </p>
       <p className="mb-2">
-        By utilizing the Flare Data Connector, Flare Olympics Bet demonstrates how decentralized
-        applications can effectively use external data to provide a seamless and trustworthy betting
-        experience on the blockchain.
+        By utilizing the Flare Data Connector, Flare Olympics Prediction demonstrates how
+        decentralized applications can effectively use external data to provide a seamless and
+        trustworthy prediction experience on the blockchain.
       </p>
     </div>
   );

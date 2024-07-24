@@ -47,6 +47,7 @@ export default function EventBetInput({
     watch,
     trigger,
     reset,
+    clearErrors,
     formState: { errors },
   } = useFormSchema(schema);
   const watchBet = watch('bet');
@@ -70,16 +71,21 @@ export default function EventBetInput({
           <Controller
             control={control}
             name="bet"
+            defaultValue={undefined}
             render={({ field: { value, onChange } }) => (
               <NumberInput
                 key={resetK}
                 value={value}
                 step={0.1}
                 className="!ring-primary flex-grow"
-                onChange={e => (
-                  onChange(Math.max(Number(e.target.value), 0)),
-                  Number(e.target.value) !== 0 ? trigger() : {}
-                )}
+                onChange={e => {
+                  if (Number(e.target.value)) {
+                    onChange(Math.max(Number(e.target.value), 0));
+                  } else {
+                    onChange(undefined);
+                  }
+                  Number(e.target.value) !== 0 ? trigger() : clearErrors();
+                }}
               ></NumberInput>
             )}
           />
