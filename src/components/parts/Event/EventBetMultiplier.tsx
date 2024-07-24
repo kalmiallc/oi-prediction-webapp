@@ -22,7 +22,7 @@ export default function EventBetMultiplier({
     abi: betAbi,
     address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
     functionName: 'calculateAproximateBetReturn',
-    args: [parseEther(amount.toString()).toString(), choice, event],
+    args: [parseEther(amount?.toString() || '0').toString(), choice, event],
     query: { staleTime: 1 * 60 * 1000, enabled: !!amount },
   });
 

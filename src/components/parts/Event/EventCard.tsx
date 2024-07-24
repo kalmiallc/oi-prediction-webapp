@@ -64,7 +64,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
       >
         <Tooltip
           title={
-            hasStarted ? 'Started ' : 'Starts ' + dayjs(Number(event.startTime) * 1000).fromNow()
+            (hasStarted ? 'Started ' : 'Starts ') + dayjs(Number(event.startTime) * 1000).fromNow()
           }
           placement="top"
           PopperProps={{
