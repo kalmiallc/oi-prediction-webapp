@@ -88,3 +88,5 @@ To deploy the application, you can use platforms like Vercel, Netlify, or any ot
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
+
+
