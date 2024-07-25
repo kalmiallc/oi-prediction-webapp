@@ -11,12 +11,6 @@ export default function AboutPage() {
       <p>This showcase was developed in cooperation with:</p>
       <ul className="mb-4">
         <li>
-          <strong>Flare network: </strong>
-          <a href="https://flare.network/" target="_blank">
-            https://flare.network/
-          </a>
-        </li>
-        <li>
           <strong>Kalmia: </strong>
           <a href="https://kalmia.si/" target="_blank">
             https://kalmia.si/

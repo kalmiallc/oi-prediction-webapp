@@ -95,7 +95,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
               </h3>
               {event.cancelled ? (
                 choice.choiceId === 3 && (
-                  <div className="text-center text-gray pb-10">
+                  <div className="text-center text-lg text-primary pb-10">
                     <div>Match Cancelled!</div>
                     <EventClaimButton event={event} />
                   </div>
@@ -103,7 +103,7 @@ export default function EventCard({ className, event }: { event: SportEvent } & 
               ) : event.winner === 0 && !hasStarted ? (
                 !choice.fake && <EventBetInput event={event} choice={choice} />
               ) : (
-                <div className="text-center text-gray pb-10">
+                <div className="text-center text-lg text-primary pb-10">
                   {event.winner === choice.choiceId && (
                     <div>{choice.choiceId === 3 ? 'Draw!' : 'Winner!'}</div>
                   )}

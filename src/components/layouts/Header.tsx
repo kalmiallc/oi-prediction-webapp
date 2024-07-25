@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import Icon from '@mdi/react';
@@ -25,9 +24,6 @@ export default function Header() {
           <Button className="lg:hidden" onClick={() => dispatch({ type: 'switchSidebarOpen' })}>
             <Icon path={mdiMenu}></Icon>
           </Button>
-          <Link href={'https://flare.network/'} target="_blank" className="hidden md:block">
-            <Image src="/images/logo.png" alt="Flare Logo" height={35} width={101} />
-          </Link>
           <Image
             src="/images/olympics-logo.png"
             alt="Olympics Logo"
@@ -35,7 +31,7 @@ export default function Header() {
             width={80}
             className="hidden md:block"
           />
-          <h1 className="typo-h2 hidden md:block">2024 Olypmics Prediction Market</h1>
+          <h1 className="typo-h2 hidden md:block">2024 Olympics Prediction Market</h1>
         </div>
 
         {/* Right side */}

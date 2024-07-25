@@ -51,8 +51,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Flare Bet</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+        <title>2024 Olympics Prediction Market</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/paris-icon-32.png" />
       </Head>
       <style jsx global>{`
         :root {

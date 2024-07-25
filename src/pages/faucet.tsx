@@ -74,7 +74,7 @@ export default function FaucetPage() {
     <div className="px-5 lg:px-10 max-w-[1400px] m-auto bg-white pt-4 pb-10 rounded-[24px]">
       <div>
         <h1 className="typo-h1 mb-2">Get Daily OI Coins</h1>
-        <p>You can claim 1000 coins every day.</p>
+        <p>You can claim 500 coins every day.</p>
       </div>
       <div className="m-auto md:w-fit mt-10">
         {!isDefinitelyConnected ? (
@@ -90,7 +90,7 @@ export default function FaucetPage() {
               className="w-full md:w-auto md:px-10"
               onClick={claimToken}
             >
-              {loading && <CircularProgress size={12} className="absolute" />}Claim 1000 OI Coins
+              {loading && <CircularProgress size={12} className="absolute" />}Claim 500 OI Coins
             </Button>
             {!canMint && (
               <p className="text-center text-red text-sm mt-2">Can only claim once per day</p>
