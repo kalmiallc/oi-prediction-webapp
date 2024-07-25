@@ -22,13 +22,13 @@ function ContractTemplate(
 const Contracts = {
   [ContractType.BET_SHOWCASE]: ContractTemplate(
     betAbi,
-    '0x8B109F126F5454Edc5662A254933E19250222dBB', // prod
-    '0x8B109F126F5454Edc5662A254933E19250222dBB' // dev
+    '0x30882A3d7562Bd0cbbafc2ec6C491B5A30b18895', // prod
+    '0x30882A3d7562Bd0cbbafc2ec6C491B5A30b18895' // dev
   ),
   [ContractType.OI_TOKEN]: ContractTemplate(
     OIAbi,
-    '0x436f2E9fa77eBFca331639FB1c72Eadd2fd9fCEB', // prod
-    '0x436f2E9fa77eBFca331639FB1c72Eadd2fd9fCEB' // dev
+    '0x21bb744BCc53d78b904c2E374EC460C086908537', // prod
+    '0x21bb744BCc53d78b904c2E374EC460C086908537' // dev
   ),
 };
 
