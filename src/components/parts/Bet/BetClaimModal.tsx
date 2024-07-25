@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';

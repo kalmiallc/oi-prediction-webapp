@@ -2,7 +2,7 @@ import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
 import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
 import { useParams } from 'next/navigation';
 import { CircularProgress, TextField } from '@mui/material';
@@ -15,7 +15,7 @@ import { useGlobalContext } from '@/contexts/global';
 
 export default function SportPage() {
   const params = useParams<{ sport: string }>();
-  const { reloadBets, eventEmitter } = useGlobalContext();
+  const { eventEmitter } = useGlobalContext();
 
   const [sport, setSport] = useState<Sports | undefined>(sportByLink?.[params?.sport] || undefined);
 
