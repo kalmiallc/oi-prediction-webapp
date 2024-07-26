@@ -23,8 +23,7 @@ const queryClient = new QueryClient();
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
-// TODO: change prod to songbird process.env.NODE_ENV === 'production' ? songbird : songbirdTestnet
-const chains = [songbirdTestnet] as const;
+const chains = [songbirdTestnet, songbird] as const;
 
 const theme = createTheme({
   typography: {
@@ -51,8 +50,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Flare Bet</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+        <title>2024 Olympics Prediction Market</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/paris-icon-32.png" />
       </Head>
       <style jsx global>{`
         :root {

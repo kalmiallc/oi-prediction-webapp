@@ -20,6 +20,49 @@ svg:not(.svg-filled) {
   }
 }
 
+.typo-h1 {
+  @apply text-[32px] font-bold text-black;
+}
+
+.typo-h2 {
+  @apply text-[22px] font-bold text-black;
+}
+
+* {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+}
+
+body * {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.primary/0.3') theme('colors.white/0.8');
+
+  &::-webkit-scrollbar {
+    position: absolute;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #abacb066;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: theme('colors.primary/0.2');
+    border-radius: 5px;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.primary');
+  }
+}
+
 .MuiInputBase-root {
   border-radius: 10px;
   background: white;
@@ -40,4 +83,21 @@ svg:not(.svg-filled) {
 
 .MuiDialog-paper {
   border-radius: 10px;
+}
+
+.MuiTableCell-root {
+  padding: 12px;
+}
+
+.MuiTableHead-root {
+  .MuiTableCell-root {
+    font-weight: bold;
+  }
+}
+
+.connectButton {
+  button {
+    border: 1px solid theme('colors.primary') !important;
+    @apply !rounded-[24px] !px-2 lg:!px-5 !bg-white !text-primary;
+  }
 }

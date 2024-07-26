@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForNetwork } from '@/lib/contracts';
 import classNames from 'classnames';
 import { formatEther, parseEther } from 'viem';
+import { useGlobalContext } from '@/contexts/global';
 
 export default function EventBetMultiplier({
   className,
@@ -12,13 +13,21 @@ export default function EventBetMultiplier({
   initial,
   amount,
 }: { event: string; choice: number; initial: number; amount: number } & ComponentProps) {
+  const {
+    state: { selectedNetwork },
+  } = useGlobalContext();
   const [newMulti, setNewMulti] = useState(0);
   const [newReturn, setNewReturn] = useState(initial * amount);
-  const { data: aproxReturn, refetch } = useReadContract({
+
+  const {
+    data: aproxReturn,
+    refetch,
+    isLoading,
+  } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, selectedNetwork),
     functionName: 'calculateAproximateBetReturn',
-    args: [parseEther(amount.toString()).toString(), choice, event],
+    args: [parseEther(amount?.toString() || '0').toString(), choice, event],
     query: { staleTime: 1 * 60 * 1000, enabled: !!amount },
   });
 
@@ -47,11 +56,15 @@ export default function EventBetMultiplier({
     <div className={classNames(['text-xs text-gray items-center', className])}>
       <div className="mb-1">
         Multiplier:{' '}
-        <span className="text-black font-bold">x{(newMulti || initial).toFixed(2)}</span>
+        <span className="text-black font-bold">
+          x{(newMulti || isLoading ? newMulti : initial).toFixed(2)}
+        </span>
       </div>
       <div>
-        Potential SGB Returns:{' '}
-        <span className="text-black font-bold">{(newReturn || initial * amount).toFixed(2)}</span>
+        Potential OI Returns:{' '}
+        <span className="text-black font-bold">
+          {(newReturn || isLoading ? newReturn : initial * amount).toFixed(2)}
+        </span>
       </div>
     </div>
   );

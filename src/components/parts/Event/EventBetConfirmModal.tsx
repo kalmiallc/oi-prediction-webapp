@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
@@ -12,29 +12,27 @@ export default function EventBetConfirmModal({
   event: SportEvent;
   data: { choice: number; amount: number } | null;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
 } & ComponentProps) {
-  const { placeBet, isPending, transactionConfirm } = useContract();
-
-  useEffect(() => {
-    if (transactionConfirm) {
-      onConfirm();
-    }
-  }, [transactionConfirm]);
+  const { placeBet, isPending } = useContract();
+  const [loading, setLoading] = useState(false);
 
   async function onBet() {
     try {
       if (!data) {
         return;
       }
+      setLoading(true);
       await placeBet(event.uid, data.choice, data.amount);
+      setLoading(false);
+      onConfirm?.();
       onClose();
-      toast.success('Bet placed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
       }
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -49,7 +47,7 @@ export default function EventBetConfirmModal({
       isOpen={!!data?.choice?.toString()}
       onClose={() => onClose?.()}
       onConfirm={() => onBet()}
-      isLoading={isPending}
+      isLoading={isPending || loading}
       title="Confirm your bet?"
     >
       <div className="text-gray ">
@@ -57,7 +55,10 @@ export default function EventBetConfirmModal({
         <p>
           {choice}
           {choice.toLowerCase() !== 'draw' ? ' to win: ' : ': '}
-          <span className="font-bold">{data.amount} SGB</span>
+          <span className="font-bold">
+            {data.amount}
+            {' OI'}
+          </span>
         </p>
       </div>
     </Modal>

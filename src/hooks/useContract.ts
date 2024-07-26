@@ -1,19 +1,34 @@
-import { parseEther } from 'viem';
-import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import { getContractAddressForEnv } from '@/lib/contracts';
-import { betAbi } from '@/lib/abi';
+import { maxUint256, parseEther } from 'viem';
+import { useAccount, useConfig, useSwitchChain, useWriteContract } from 'wagmi';
+import { ContractType, getContractAddressForNetwork } from '@/lib/contracts';
+import { OIAbi, betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
-import { songbirdTestnet } from 'viem/chains';
+import { songbirdTestnet, songbird } from 'viem/chains';
+import { useGlobalContext } from '@/contexts/global';
+import { waitForTransactionReceipt } from '@wagmi/core';
 
 export default function useContract() {
-  const { data: hash, writeContractAsync, isPending } = useWriteContract();
+  const { writeContractAsync, isPending } = useWriteContract();
   const { address, chainId } = useAccount();
   const { switchChainAsync, isPending: isPendingChain } = useSwitchChain();
+  const {
+    waitTx,
+    reloadAllowance,
+    state: { allowance, selectedNetwork },
+  } = useGlobalContext();
+  const config = useConfig();
 
-  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-    query: { enabled: !!hash },
-  });
+  const contract = {
+    abi: betAbi,
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, selectedNetwork),
+    chainId: selectedNetwork,
+  };
+
+  const tokenContract = {
+    abi: OIAbi,
+    address: getContractAddressForNetwork(ContractType.OI_TOKEN, selectedNetwork),
+    chainId: selectedNetwork,
+  };
 
   async function check() {
     if (!address) {
@@ -22,69 +37,81 @@ export default function useContract() {
     }
     if (!chainId) {
       toast.error('Please connect the wallet to the required chain');
+      return false;
     } else {
-      const requiredChainId = songbirdTestnet.id;
-      // process.env.NODE_ENV === 'production' ? songbird.id : songbirdTestnet.id;
-
-      if (chainId !== requiredChainId) {
+      if (selectedNetwork !== chainId) {
         toast.warning('Please connect the wallet to the required chain');
-        await switchChainAsync({ chainId: requiredChainId });
+        await switchChainAsync({ chainId: selectedNetwork });
         return false;
       }
     }
+    return true;
   }
 
-  const contractAddress = getContractAddressForEnv(process.env.NODE_ENV);
+  async function checkAllowance() {
+    if (!allowance) {
+      const hash = await writeContractAsync({
+        ...tokenContract,
+        functionName: 'approve',
+        args: [contract.address, maxUint256],
+      });
+      await waitForTransactionReceipt(config, { hash });
+      reloadAllowance();
+    }
+    return true;
+  }
 
   async function placeBet(betUuid: string, choiceId: number, amount: number) {
-    await check();
-    if (!contractAddress) {
+    if (!(await check()) || !contract.address || !(await checkAllowance())) {
       return;
     }
 
     const value = parseEther(amount.toString());
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'placeBet',
-      args: [betUuid, choiceId],
-      value,
+      args: [betUuid, choiceId, value],
     });
+    waitTx(hash, 'placedBet');
+
+    return hash;
   }
 
   async function claimBet(betId: bigint) {
-    await check();
-    if (!contractAddress) {
+    if (!(await check()) || !contract.address) {
       return;
     }
 
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'claimWinnings',
       args: [betId],
     });
+    waitTx(hash, 'claimedBet');
+
+    return hash;
   }
 
   async function refundBet(betId: bigint) {
-    await check();
-    if (!contractAddress) {
+    if (!(await check()) || !contract.address) {
       return;
     }
 
-    await writeContractAsync({
-      abi: betAbi,
-      address: contractAddress,
+    const hash = await writeContractAsync({
+      ...contract,
       functionName: 'refund',
       args: [betId],
     });
+    waitTx(hash, 'claimedRefund');
+
+    return hash;
   }
 
   return {
+    check,
     placeBet,
     claimBet,
     refundBet,
     isPending: isPending || isPendingChain,
-    transactionConfirm: isConfirmed,
   };
 }

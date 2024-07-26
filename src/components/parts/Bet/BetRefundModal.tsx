@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
@@ -17,7 +17,7 @@ export default function BetRefundModal({
   onClose: () => void;
   onRefund?: () => void;
 } & ComponentProps) {
-  const { refundBet, isPending, transactionConfirm } = useContract();
+  const { refundBet, isPending } = useContract();
 
   async function onConfirm() {
     try {
@@ -25,8 +25,8 @@ export default function BetRefundModal({
         return;
       }
       await refundBet(bet.id);
+      onRefund?.();
       onClose();
-      toast.success('Bet winnings claimed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
@@ -35,11 +35,9 @@ export default function BetRefundModal({
     }
   }
 
-  useEffect(() => {
-    if (transactionConfirm) {
-      onRefund?.();
-    }
-  }, [transactionConfirm]);
+  if (!event) {
+    return <></>;
+  }
 
   const choice = event?.choices[bet.betChoice];
   return (
@@ -58,7 +56,10 @@ export default function BetRefundModal({
         </p>
         <p>
           Amount:{' '}
-          <span className="font-bold">{(+formatUnits(bet.betAmount, 18)).toFixed(4)} SGB</span>
+          <span className="font-bold">
+            {(+formatUnits(bet.betAmount, 18)).toFixed(4)}
+            {' OI'}
+          </span>
         </p>
       </div>
     </Modal>

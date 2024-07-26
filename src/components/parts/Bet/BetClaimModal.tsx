@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useContract from '@/hooks/useContract';
 import { toast } from 'sonner';
 import Modal from '@/components/misc/Modal';
@@ -17,7 +17,7 @@ export default function BetClaimModal({
   onClose: () => void;
   onClaim?: () => void;
 } & ComponentProps) {
-  const { claimBet, isPending, transactionConfirm } = useContract();
+  const { claimBet, isPending } = useContract();
 
   async function onConfirm() {
     try {
@@ -25,8 +25,8 @@ export default function BetClaimModal({
         return;
       }
       await claimBet(bet.id);
+      onClaim?.();
       onClose();
-      toast.success('Bet winnings claimed');
     } catch (error: any) {
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
@@ -34,12 +34,9 @@ export default function BetClaimModal({
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    if (transactionConfirm) {
-      onClaim?.();
-    }
-  }, [transactionConfirm]);
+  if (!event) {
+    return <></>;
+  }
 
   const choice = event?.choices[bet.betChoice];
   return (
@@ -59,7 +56,8 @@ export default function BetClaimModal({
         <p>
           Winnings:{' '}
           <span className="font-bold">
-            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)} SGB
+            {((Number(bet.winMultiplier) / 1000) * +formatUnits(bet.betAmount, 18)).toFixed(4)}
+            {' OI'}
           </span>
         </p>
       </div>

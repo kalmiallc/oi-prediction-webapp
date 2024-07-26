@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useGlobalContext } from '../../../contexts/global';
+import { useGlobalContext } from '@/contexts/global';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/router';
 
@@ -14,23 +14,23 @@ export default function EventClaimButton({
     state: { bets },
   } = useGlobalContext();
   const [hasBets, setHasBets] = useState(false);
+  const [canClaim, setCanClaim] = useState(false);
 
   function onConfirm() {
-    router.replace('/bets');
+    router.replace('/predictions');
     return;
   }
 
   useEffect(() => {
     if (address && bets?.[address]?.length) {
-      setHasBets(
-        bets?.[address]?.some(
-          bet =>
-            bet.eventUID === event.uid &&
-            (!choice ||
-              (bet.betChoice === choice.choiceIndex && bet.event.winner === choice.choiceId)) &&
-            !bet.claimed
-        )
+      const choiceBets = bets?.[address]?.filter(
+        bet =>
+          bet.eventUID === event.uid &&
+          (!choice ||
+            (bet.betChoice === choice.choiceIndex && bet.event.winner === choice.choiceId))
       );
+      setHasBets(!!choiceBets.length);
+      setCanClaim(choiceBets.some(bet => !bet.claimed));
     }
   }, [bets, address]);
 
@@ -39,8 +39,19 @@ export default function EventClaimButton({
   }
   return (
     <div className="">
-      <Button variant="contained" className="w-full px-10 mt-2 capitalize" onClick={onConfirm}>
-        {choice ? 'Claim' : 'Refund'}
+      <Button
+        disabled={!canClaim}
+        variant="contained"
+        className="w-full px-10 mt-2 capitalize"
+        onClick={onConfirm}
+      >
+        {choice
+          ? canClaim
+            ? 'Claim'
+            : 'Already Claimed'
+          : canClaim
+            ? 'Refund'
+            : 'Already Refunded'}
       </Button>
     </div>
   );
