@@ -6,23 +6,28 @@ import { useEffect, useState } from 'react';
 import useContract from '../hooks/useContract';
 import { toast } from 'sonner';
 import { useGlobalContext } from '../contexts/global';
-import { ContractType, getContractAddressForEnv } from '../lib/contracts';
+import { ContractType, getContractAddressForNetwork } from '../lib/contracts';
 
 export default function FaucetPage() {
   const { address, isConnected } = useAccount();
   const { check } = useContract();
-  const { waitTx, eventEmitter } = useGlobalContext();
+  const {
+    waitTx,
+    eventEmitter,
+    state: { selectedNetwork },
+  } = useGlobalContext();
   const { writeContractAsync } = useWriteContract();
   const [loading, setLoading] = useState(false);
   const [isDefinitelyConnected, setIsDefinitelyConnected] = useState(false);
   const [canMint, setCanMint] = useState(true);
 
   const contract = {
-    address: getContractAddressForEnv(ContractType.OI_TOKEN, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.OI_TOKEN, selectedNetwork),
     abi: OIAbi,
+    chainId: selectedNetwork,
   };
 
-  const { data, isFetched } = useReadContract({
+  const { data, isFetched, refetch } = useReadContract({
     ...contract,
     functionName: 'canMint',
     args: [address],
@@ -42,6 +47,7 @@ export default function FaucetPage() {
       waitTx(hash, 'claimedToken');
     } catch (error: any) {
       setLoading(false);
+      refetch();
       if (error?.shortMessage) {
         toast.error(error?.shortMessage);
       }
@@ -53,6 +59,7 @@ export default function FaucetPage() {
     eventEmitter.on('claimedToken', () => {
       setCanMint(false);
       setLoading(false);
+      refetch();
     });
   }, [eventEmitter]);
 

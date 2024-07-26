@@ -8,7 +8,7 @@ import { useGlobalContext } from '@/contexts/global';
 import Balance from '../parts/Balance';
 
 export default function Header() {
-  const { dispatch } = useGlobalContext();
+  const { dispatch, state } = useGlobalContext();
   return (
     <>
       <div
@@ -36,7 +36,7 @@ export default function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-6">
-          <Balance />
+          <Balance className="hidden md:block" />
           <div className="connectButton">
             <ConnectButton
               showBalance={false}

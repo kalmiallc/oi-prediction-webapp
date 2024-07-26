@@ -1,6 +1,6 @@
 import { useReadContract } from 'wagmi';
 import { betAbi } from '@/lib/abi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForNetwork } from '@/lib/contracts';
 import { Sports, sportByLink, sportsNames } from '@/lib/values';
 import { useEffect, useState } from 'react';
 import EventCard from '@/components/parts/Event/EventCard';
@@ -15,7 +15,10 @@ import { useGlobalContext } from '@/contexts/global';
 
 export default function SportPage() {
   const params = useParams<{ sport: string }>();
-  const { eventEmitter } = useGlobalContext();
+  const {
+    eventEmitter,
+    state: { selectedNetwork },
+  } = useGlobalContext();
 
   const [sport, setSport] = useState<Sports | undefined>(sportByLink?.[params?.sport] || undefined);
 
@@ -36,7 +39,7 @@ export default function SportPage() {
 
   const { data, isLoading, refetch } = useReadContract({
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, selectedNetwork),
     functionName: 'getSportEventsBySport',
     args: [sport],
     query: { staleTime: 1 * 60 * 1000 },

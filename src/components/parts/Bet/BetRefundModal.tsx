@@ -35,6 +35,10 @@ export default function BetRefundModal({
     }
   }
 
+  if (!event) {
+    return <></>;
+  }
+
   const choice = event?.choices[bet.betChoice];
   return (
     <Modal

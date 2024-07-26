@@ -51,7 +51,7 @@ export default function BetListItem({
       >
         <TableCell className="truncate">{event?.title}</TableCell>
       </Tooltip>
-      <TableCell>{dayjs(Number(event.startTime) * 1000).format('MM/DD/YYYY HH:mm')}</TableCell>
+      <TableCell>{dayjs(Number(event?.startTime) * 1000).format('MM/DD/YYYY HH:mm')}</TableCell>
       <TableCell>{choice?.choiceName}</TableCell>
       <TableCell>
         {Number(parseBetAmount(bet.betAmount)).toFixed(1)}

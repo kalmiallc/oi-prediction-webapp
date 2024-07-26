@@ -10,10 +10,11 @@ import {
 import { useAccount, useConfig, useReadContract } from 'wagmi';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { betAbi, OIAbi } from '../lib/abi';
-import { ContractType, getContractAddressForEnv } from '../lib/contracts';
+import { ContractType, getContractAddressForNetwork, Network } from '../lib/contracts';
 import mitt, { Emitter } from 'mitt';
 import { toast } from 'sonner';
 import { formatUnits } from 'viem';
+import { songbird, songbirdTestnet } from 'viem/chains';
 
 // #region types
 type Action =
@@ -25,7 +26,8 @@ type Action =
   | { type: 'setSidebarOpen'; payload: boolean }
   | { type: 'switchSidebarOpen' }
   | { type: 'setBalance'; payload: number }
-  | { type: 'setAllowance'; payload: boolean };
+  | { type: 'setAllowance'; payload: boolean }
+  | { type: 'setNetwork'; payload: Network };
 
 type State = {
   timestamp: number | undefined;
@@ -33,6 +35,7 @@ type State = {
   sidebarOpen: boolean;
   balance: number;
   allowance: boolean;
+  selectedNetwork: Network;
 };
 
 type TxTypes = 'placedBet' | 'claimedBet' | 'claimedRefund' | 'claimedToken';
@@ -46,6 +49,7 @@ const initialState = () =>
     sidebarOpen: false,
     balance: 0,
     allowance: false,
+    selectedNetwork: Network.main,
   }) as State;
 
 function reducer(state: State, action: Action) {
@@ -86,6 +90,12 @@ function reducer(state: State, action: Action) {
         allowance: action.payload,
       };
     }
+    case 'setNetwork': {
+      return {
+        ...state,
+        selectedNetwork: action.payload,
+      };
+    }
     default: {
       throw new Error(('Unhandled action type: ' + action) as any);
     }
@@ -106,7 +116,7 @@ const GlobalContext = createContext<
 
 function GlobalProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState());
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const config = useConfig();
   const [bets, setBets] = useState<Bet[]>([]);
   const [eventUids, setEventUids] = useState<string[]>([]);
@@ -114,12 +124,14 @@ function GlobalProvider({ children }: { children: ReactNode }) {
 
   const contract = {
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, state.selectedNetwork),
+    chainId: state.selectedNetwork,
   };
 
   const tokenContract = {
     abi: OIAbi,
-    address: getContractAddressForEnv(ContractType.OI_TOKEN, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.OI_TOKEN, state.selectedNetwork),
+    chainId: state.selectedNetwork,
   };
 
   const { data: betData, refetch: reloadBets } = useReadContract({
@@ -151,29 +163,37 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (Array.isArray(betData)) {
-      if (betData.length) {
-        setBets(betData);
-        setEventUids([...new Set(betData.map(x => x.eventUID))]);
-        refetchEvents();
-      } else {
-        setBets([]);
-      }
+    if (Array.isArray(betData) && betData.length) {
+      setBets(betData);
+      setEventUids([...new Set(betData.map(x => x.eventUID))]);
+      refetchEvents();
+    } else {
+      setBets([]);
+      setEventUids([]);
     }
-  }, [betData]);
+  }, [betData, address]);
 
   useEffect(() => {
     if (Array.isArray(eventData) && eventData.length && address) {
-      const betsWithEvents = bets.map(bet => ({
-        ...bet,
-        event: eventData.find(event => event.uid == bet.eventUID),
-      }));
-      dispatch({
-        type: 'setBets',
-        payload: { address, bets: betsWithEvents },
-      });
+      if (
+        eventData[0].uid === '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ) {
+        dispatch({
+          type: 'setBets',
+          payload: { address, bets: [] },
+        });
+      } else {
+        const betsWithEvents = bets.map(bet => ({
+          ...bet,
+          event: eventData.find(event => event.uid == bet.eventUID),
+        }));
+        dispatch({
+          type: 'setBets',
+          payload: { address, bets: betsWithEvents },
+        });
+      }
     }
-  }, [eventData]);
+  }, [eventData, address]);
 
   useEffect(() => {
     if (!address || !balanceData) {
@@ -223,6 +243,16 @@ function GlobalProvider({ children }: { children: ReactNode }) {
       toast.success('OI Coins claimed');
     });
   }, [eventEmitter]);
+
+  useEffect(() => {
+    if (
+      (chainId === songbird.id || chainId === songbirdTestnet.id) &&
+      chainId !== state.selectedNetwork
+    ) {
+      dispatch({ type: 'setNetwork', payload: chainId });
+      reloadBets();
+    }
+  }, [chainId]);
 
   function waitTx(hash: `0x${string}`, type: TxTypes) {
     waitForTransactionReceipt(config, { hash }).then(() => eventEmitter.emit(type, hash));

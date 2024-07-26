@@ -1,9 +1,9 @@
 import { maxUint256, parseEther } from 'viem';
 import { useAccount, useConfig, useSwitchChain, useWriteContract } from 'wagmi';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForNetwork } from '@/lib/contracts';
 import { OIAbi, betAbi } from '@/lib/abi';
 import { toast } from 'sonner';
-import { songbirdTestnet } from 'viem/chains';
+import { songbirdTestnet, songbird } from 'viem/chains';
 import { useGlobalContext } from '@/contexts/global';
 import { waitForTransactionReceipt } from '@wagmi/core';
 
@@ -14,18 +14,20 @@ export default function useContract() {
   const {
     waitTx,
     reloadAllowance,
-    state: { allowance },
+    state: { allowance, selectedNetwork },
   } = useGlobalContext();
   const config = useConfig();
 
   const contract = {
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, selectedNetwork),
+    chainId: selectedNetwork,
   };
 
   const tokenContract = {
     abi: OIAbi,
-    address: getContractAddressForEnv(ContractType.OI_TOKEN, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.OI_TOKEN, selectedNetwork),
+    chainId: selectedNetwork,
   };
 
   async function check() {
@@ -37,12 +39,9 @@ export default function useContract() {
       toast.error('Please connect the wallet to the required chain');
       return false;
     } else {
-      const requiredChainId = songbirdTestnet.id;
-      // process.env.NODE_ENV === 'production' ? songbird.id : songbirdTestnet.id;
-
-      if (chainId !== requiredChainId) {
+      if (selectedNetwork !== chainId) {
         toast.warning('Please connect the wallet to the required chain');
-        await switchChainAsync({ chainId: requiredChainId });
+        await switchChainAsync({ chainId: selectedNetwork });
         return false;
       }
     }

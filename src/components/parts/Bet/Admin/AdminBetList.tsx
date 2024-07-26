@@ -3,13 +3,13 @@ import { useReadContract } from 'wagmi';
 import { useGlobalContext } from '@/contexts/global';
 import { CircularProgress, TableContainer } from '@mui/material';
 import classNames from 'classnames';
-import { ContractType, getContractAddressForEnv } from '@/lib/contracts';
+import { ContractType, getContractAddressForNetwork } from '@/lib/contracts';
 import { betAbi } from '@/lib/abi';
 import AdminBetListTable from './AdminBetListTable';
 
 export default function AdminBetList({ className }: ComponentProps) {
   const {
-    state: { timestamp },
+    state: { timestamp, selectedNetwork },
   } = useGlobalContext();
   const [bets, setBets] = useState<Bet[]>([]);
   const [events, setEvents] = useState<SportEvent[]>([]);
@@ -20,7 +20,8 @@ export default function AdminBetList({ className }: ComponentProps) {
 
   const contract = {
     abi: betAbi,
-    address: getContractAddressForEnv(ContractType.BET_SHOWCASE, process.env.NODE_ENV),
+    address: getContractAddressForNetwork(ContractType.BET_SHOWCASE, selectedNetwork),
+    chainId: selectedNetwork,
   };
   const { data: betsLength } = useReadContract({
     ...contract,

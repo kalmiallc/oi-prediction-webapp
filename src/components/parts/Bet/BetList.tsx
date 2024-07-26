@@ -22,6 +22,8 @@ export default function BetList({
   useEffect(() => {
     if (address && addressBets?.[address]?.length) {
       setBets(addressBets?.[address]);
+    } else {
+      setBets([]);
     }
   }, [addressBets, address]);
 

@@ -3,6 +3,7 @@ import SidebarNav from './SidebarNav';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useGlobalContext } from '@/contexts/global';
+import Balance from '../Balance';
 
 export default function Sidebar() {
   const {
@@ -23,6 +24,7 @@ export default function Sidebar() {
         ])}
         style={{ transition: 'min-width 250ms cubic-bezier(0.4, 0, 0.2, 1)' }}
       >
+        <Balance className="md:hidden text-center mb-6" />
         <SidebarNav />
         <Link href="https://kalmia.si/" target="_blank" className="block ml-12 mt-6">
           <Image src="/images/kalmia-logo.png" alt="Olympics Logo" height={12} width={122} />

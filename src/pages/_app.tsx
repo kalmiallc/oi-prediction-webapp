@@ -23,8 +23,7 @@ const queryClient = new QueryClient();
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
-// TODO: change prod to songbird process.env.NODE_ENV === 'production' ? songbird : songbirdTestnet
-const chains = [songbirdTestnet] as const;
+const chains = [songbirdTestnet, songbird] as const;
 
 const theme = createTheme({
   typography: {

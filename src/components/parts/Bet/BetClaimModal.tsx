@@ -34,6 +34,9 @@ export default function BetClaimModal({
       console.log(error);
     }
   }
+  if (!event) {
+    return <></>;
+  }
 
   const choice = event?.choices[bet.betChoice];
   return (
