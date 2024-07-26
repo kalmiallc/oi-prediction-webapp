@@ -174,22 +174,29 @@ function GlobalProvider({ children }: { children: ReactNode }) {
   }, [betData, address]);
 
   useEffect(() => {
-    if (Array.isArray(eventData) && eventData.length && address) {
-      if (
-        eventData[0].uid === '0x0000000000000000000000000000000000000000000000000000000000000000'
-      ) {
+    if (address) {
+      if (Array.isArray(eventData) && eventData.length) {
+        if (
+          eventData[0].uid === '0x0000000000000000000000000000000000000000000000000000000000000000'
+        ) {
+          dispatch({
+            type: 'setBets',
+            payload: { address, bets: [] },
+          });
+        } else {
+          const betsWithEvents = bets.map(bet => ({
+            ...bet,
+            event: eventData.find(event => event.uid == bet.eventUID),
+          }));
+          dispatch({
+            type: 'setBets',
+            payload: { address, bets: betsWithEvents },
+          });
+        }
+      } else {
         dispatch({
           type: 'setBets',
           payload: { address, bets: [] },
-        });
-      } else {
-        const betsWithEvents = bets.map(bet => ({
-          ...bet,
-          event: eventData.find(event => event.uid == bet.eventUID),
-        }));
-        dispatch({
-          type: 'setBets',
-          payload: { address, bets: betsWithEvents },
         });
       }
     }
